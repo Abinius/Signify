@@ -121,8 +121,25 @@
                     class="label-caption text-accent hover:opacity-70 transition-opacity">申请推荐 →</button>
           @endif
         @endif
-        <a href="{{ route('entrepreneurs.show', $entrepreneur->id) }}"
+        <a href="{{ route('entrepreneurs.show', $entrepreneur->share_slug ?? $entrepreneur->id) }}"
            class="label-caption text-accent hover:opacity-70 transition-opacity">查看我的名片</a>
+      </div>
+
+      {{-- 专属链接：vour.cn/u/{slug}，用户自己填 --}}
+      <div x-data="slugForm(@js(old('share_slug', $entrepreneur->share_slug ?? '')))">
+        <label class="label-caption text-muted">专属链接</label>
+        <p class="mt-1 text-xs text-muted">分享名片时显示的短链地址</p>
+        <div class="mt-2 flex items-center gap-2">
+          <span class="label-caption text-muted whitespace-nowrap">vour.cn/u/</span>
+          <input type="text" name="share_slug" x-model="slug"
+                 @input.debounce.300ms="check"
+                 placeholder="zhangsan" class="input-line flex-1"
+                 value="{{ old('share_slug', $entrepreneur->share_slug) }}">
+          <span x-show="status" class="label-caption flex-shrink-0"
+                :class="statusClass" x-text="statusText"></span>
+        </div>
+        <p class="mt-1 text-xs text-muted">至少含一个字母，仅支持小写字母、数字和连字符</p>
+        @error('share_slug') <p class="field-error">{{ $message }}</p> @enderror
       </div>
 
       {{-- 裁剪弹窗：形象照 4:5 主裁自动派生 1:1；二维码 1:1 --}}
@@ -385,6 +402,48 @@
           self.$refs[refName].files = dt.files;
           if (previewKey) self[previewKey] = canvas.toDataURL('image/jpeg');
         }, 'image/jpeg', 0.9);
+      }
+    };
+  };
+
+  window.slugForm = function (initial) {
+    return {
+      slug: (initial || ''),
+      status: '',
+      checking: false,
+
+      check() {
+        this.slug = this.slug.toLowerCase().replace(/[^a-z0-9-]/g, '');
+        if (this.slug.length < 3) {
+          this.status = '';
+          return;
+        }
+        this.checking = true;
+        this.status = '校验中…';
+        var token = document.querySelector('meta[name="csrf-token"]').content;
+        var self = this;
+        fetch('/my/profile/check-slug?slug=' + encodeURIComponent(this.slug), {
+          headers: { 'X-CSRF-TOKEN': token }
+        })
+          .then(function (r) { return r.json(); })
+          .then(function (data) {
+            self.checking = false;
+            self.status = data.available ? '可用 ✓' : '已被使用';
+          })
+          .catch(function () {
+            self.checking = false;
+            self.status = '';
+          });
+      },
+
+      get statusClass() {
+        if (this.checking) return 'text-muted';
+        if (this.status === '可用 ✓') return 'text-status-success';
+        return 'text-status-danger';
+      },
+
+      get statusText() {
+        return this.status;
       }
     };
   };

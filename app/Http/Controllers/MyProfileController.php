@@ -42,6 +42,24 @@ class MyProfileController extends Controller
 
         $data = $request->validated();
 
+        // share_slug 的唯一性：排除本人已有 slug（用户可修改自己的 slug）
+        if (!empty($data['share_slug'])) {
+            // 拒绝纯数字 slug
+            if (ctype_digit($data['share_slug'])) {
+                return redirect()->back()->withInput()->withErrors([
+                    'share_slug' => '专属链接不能为纯数字',
+                ]);
+            }
+            $taken = Entrepreneur::where('share_slug', $data['share_slug'])
+                ->where('user_id', '!=', $entrepreneur->user_id)
+                ->exists();
+            if ($taken) {
+                return redirect()->back()->withInput()->withErrors([
+                    'share_slug' => '该专属链接已被使用，请换一个',
+                ]);
+            }
+        }
+
         // 文件字段由下方单独处理（避免空文件输入把已有图片清空）
         unset($data['avatar'], $data['wechat_qrcode'], $data['portrait']);
 
@@ -101,6 +119,31 @@ class MyProfileController extends Controller
         ]);
 
         return redirect()->route('profile.show')->with('success', '档案创建成功！');
+    }
+
+    /**
+     * 短链可用性实时校验（AJAX）。
+     * 返回 {"available": bool}，slug 被本人占用时视为可用。
+     */
+    public function checkSlug(Request $request): array
+    {
+        $request->validate([
+            'slug' => 'required|string|min:3|max:40|regex:/^[a-z0-9]+(?:-[a-z0-9]+)*$/',
+        ]);
+
+        $slug   = $request->input('slug');
+
+        // 拒绝纯数字 slug：避免与 /entrepreneurs/{id} 旧路由解析冲突
+        if (ctype_digit($slug)) {
+            return ['available' => false];
+        }
+        $userId = Auth::id();
+
+        $taken = Entrepreneur::where('share_slug', $slug)
+            ->when($userId, fn ($q) => $q->where('user_id', '!=', $userId))
+            ->exists();
+
+        return ['available' => !$taken];
     }
 
     /**

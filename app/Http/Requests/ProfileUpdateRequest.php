@@ -64,6 +64,7 @@ class ProfileUpdateRequest extends FormRequest
         return [
             'name' => 'sometimes|required|string|max:100',
             'title' => 'sometimes|string|max:100|nullable',
+            'share_slug' => 'sometimes|nullable|string|min:3|max:40|regex:/^[a-z0-9]+(?:-[a-z0-9]+)*$/',
             'avatar' => ['sometimes', 'file', 'max:2048'],
             'portrait' => ['sometimes', 'file', 'max:2048'],
             'industry' => 'sometimes|string|max:100|nullable',

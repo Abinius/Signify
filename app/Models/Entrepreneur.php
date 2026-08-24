@@ -15,6 +15,7 @@ class Entrepreneur extends Model
      * 可批量赋值的属性
      */
     protected $fillable = [
+        'share_slug',
         'user_id',
         'name',
         'title',

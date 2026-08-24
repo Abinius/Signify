@@ -12,7 +12,19 @@ use Illuminate\Support\Facades\Route;
 */
 Route::get('/', [EntrepreneurController::class, 'home'])->middleware('auth')->name('home');
 Route::get('/entrepreneurs', [EntrepreneurController::class, 'index'])->name('entrepreneurs.index');
-Route::get('/entrepreneurs/{id}', [EntrepreneurController::class, 'show'])->name('entrepreneurs.show')->whereNumber('id');
+
+/*
+| 短链路由 /u/{slug}：复用 entrepreneurs.show。
+| 放在 /entrepreneurs/{id} 前面，避免 {id} 先吃掉纯数字 slug。
+| named route 指向 /u，route('entrepreneurs.show', $slug) 自动输出短链 URL。
+*/
+Route::get('/u/{slug}', [EntrepreneurController::class, 'show'])
+    ->name('entrepreneurs.show')
+    ->where('slug', '[a-z0-9]+(?:-[a-z0-9]+)*');
+
+// 旧数字链接保留，不 301（避免微信预览读到目标 URL）
+Route::get('/entrepreneurs/{id}', [EntrepreneurController::class, 'show'])
+    ->whereNumber('id');
 
 /*
 |--------------------------------------------------------------------------
@@ -24,6 +36,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/my/profile', [MyProfileController::class, 'show'])->name('profile.show');
     Route::patch('/my/profile', [MyProfileController::class, 'update'])->name('profile.update');
     Route::post('/my/profile', [MyProfileController::class, 'create'])->name('profile.create');
+
+    // 短链可用性实时校验（AJAX 端点）
+    Route::get('/my/profile/check-slug', [MyProfileController::class, 'checkSlug'])->name('profile.check-slug');
 
     // 推荐申请
     Route::post('/my/profile/featured-request', [MyProfileController::class, 'requestFeatured'])->name('profile.featured-request');

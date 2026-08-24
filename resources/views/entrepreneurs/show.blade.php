@@ -6,7 +6,7 @@
 {{-- 转义说明：@section('name', $val) 内部已自动 e()，无需再显式转义（重复 e() 会造成 &amp;amp; 双重实体） --}}
 @section('og-title', trim($entrepreneur->name.($entrepreneur->title ? ' '.$entrepreneur->title : '')))
 @section('og-description', \Illuminate\Support\Str::limit(trim($entrepreneur->bio ?: $entrepreneur->industry ?: \App\Models\Setting::get('site_description', '每一份引领行业的商业远见，都值得被更广泛地看见')), 80))
-@section('og-url', route('entrepreneurs.show', $entrepreneur->id))
+@section('og-url', route('entrepreneurs.show', $entrepreneur->share_slug ?? $entrepreneur->id))
 @if($entrepreneur->portrait || $entrepreneur->avatar)
   @section('og-image', url('storage/'.($entrepreneur->portrait ?? $entrepreneur->avatar)))
 @endif
