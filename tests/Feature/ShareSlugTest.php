@@ -235,6 +235,9 @@ class ShareSlugTest extends TestCase
 
         $this->get('/entrepreneurs/'.$entrepreneur->id)
             ->assertSee('property="og:url" content="' . route('entrepreneurs.show', $entrepreneur->id) . '"', false);
+
+        // og:url 指向 /u/{id}，必须真正可访问（修复前此处 404）
+        $this->get(route('entrepreneurs.show', $entrepreneur->id))->assertStatus(200);
     }
 
     /**
@@ -259,9 +262,24 @@ class ShareSlugTest extends TestCase
     public function test_home_redirects_to_id_without_slug(): void
     {
         $user = User::factory()->create();
-        Entrepreneur::factory()->create(['user_id' => $user->id]);
+        $entrepreneur = Entrepreneur::factory()->create(['user_id' => $user->id]);
 
         $this->actingAs($user)->get('/')
-            ->assertRedirect('/u/' . Entrepreneur::first()->id);
+            ->assertRedirect('/u/' . $entrepreneur->id);
+
+        // /u/{id} 必须真正可访问（修复前此处 404）
+        $this->actingAs($user)->get('/u/' . $entrepreneur->id)->assertStatus(200);
+    }
+
+    /**
+     * /u/{纯数字} 按 id 回退解析，不查 slug（回归测试：修复前会 404）
+     */
+    public function test_numeric_slug_route_resolves_by_id(): void
+    {
+        $entrepreneur = Entrepreneur::factory()->create();
+
+        $this->get('/u/' . $entrepreneur->id)
+            ->assertStatus(200)
+            ->assertSee($entrepreneur->name);
     }
 }
