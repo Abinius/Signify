@@ -5,7 +5,7 @@
 @section('content')
 
 <section class="max-w-7xl mx-auto px-6 pt-16 pb-10 text-center">
-  <p class="label-caption text-accent mb-4">{{ \App\Models\Setting::get('site_name', 'SIGNIFY') }} · ENTREPRENEURS</p>
+  <p class="label-caption text-accent mb-4">{{ \App\Models\Setting::get('site_name', 'SIGNIFY') }} · FIGURES</p>
   <h1 class="font-display text-display-lg font-black text-ink">智库</h1>
   <p class="mt-4 text-ink-soft max-w-2xl leading-relaxed mx-auto">每一份引领行业的远见，都值得被看见。</p>
 </section>
@@ -38,7 +38,7 @@
     </div>
     <button type="submit" class="btn-ink flex-shrink-0">筛选</button>
   </form>
-  <p class="mt-6 text-sm text-muted">共 {{ $entrepreneurs->total() }} 位企业家</p>
+  <p class="mt-6 text-sm text-muted">共 {{ $entrepreneurs->total() }} 位名家</p>
 </section>
 
 <section class="max-w-7xl mx-auto px-6 pb-6">
