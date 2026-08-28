@@ -50,7 +50,7 @@
   @else
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-14">
       @foreach($entrepreneurs as $entrepreneur)
-        <a href="{{ route('entrepreneurs.show', $entrepreneur->id) }}" class="group block border border-hairline bg-surface">
+        <a href="{{ route('entrepreneurs.show', $entrepreneur->share_slug ?? $entrepreneur->id) }}" class="group block border border-hairline bg-surface">
           <div class="aspect-square overflow-hidden border-b border-hairline">
             @if($entrepreneur->avatar)
               <img src="{{ asset('storage/'.$entrepreneur->avatar) }}" alt="{{ $entrepreneur->name }}"
