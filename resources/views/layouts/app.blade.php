@@ -8,13 +8,8 @@
   <meta name="description" content="{{ \App\Models\Setting::get('site_description', '不用复杂定义，只用数字化技术，把企业家的个人价值放大成看得见的核心竞争力。') }}">
   <meta name="theme-color" content="#FAFAF7">
 
-  <!-- 浏览器图标 -->
-  <link rel="icon" href="{{ asset('favicon.ico') }}" sizes="48x48">
-  <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32x32.png') }}">
-  <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon-16x16.png') }}">
-  <link rel="apple-touch-icon" href="{{ asset('apple-touch-icon.png') }}">
-  <link rel="manifest" href="{{ asset('site.webmanifest') }}">
-  <link rel="mask-icon" href="{{ asset('safari-pinned-tab.svg') }}" color="#1A1A18">
+  {{-- 浏览器图标 --}}
+  @include('partials.favicons')
 
   <!-- 微信 / 社交媒体分享（各页可用 og-title / og-description / og-url / og-image 区块覆盖） -->
   <meta property="og:type" content="website">
@@ -33,22 +28,8 @@
   @stack('styles')
   <link rel="preconnect" href="https://fonts.googleapis.cn">
   <link rel="preconnect" href="https://fonts.gstatic.cn" crossorigin>
-  <!-- 拉丁字体（Playfair/Inter）：国内节点优先，失败自动切谷歌；中文用系统字体 -->
-  <script>
-    (function () {
-      var FONT_CSS = "css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;700&display=swap";
-      function loadFonts(cdn) {
-        var l = document.createElement("link");
-        l.rel = "stylesheet";
-        l.href = "https://" + cdn + "/" + FONT_CSS;
-        if (cdn !== "fonts.googleapis.com") {
-          l.onerror = function () { loadFonts("fonts.googleapis.com"); };
-        }
-        document.head.appendChild(l);
-      }
-      loadFonts("fonts.googleapis.cn"); /* 国内优先，失败自动切谷歌 */
-    })();
-  </script>
+  {{-- 拉丁字体（Playfair/Inter）：国内节点优先，失败自动切谷歌；中文用系统字体 --}}
+  @include('partials.font-loader')
   <script defer src="{{ asset('js/alpine.min.js') }}"></script>
 </head>
 <body class="min-h-screen flex flex-col" x-data="{ menuOpen: false }"

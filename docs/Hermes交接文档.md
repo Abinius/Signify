@@ -80,8 +80,8 @@ Composer ≥2.10 默认拦截 `laravel/framework ^11.0` 安全公告，`composer
 ### 4.4 `{{ @yield(...) }}` 会导致全站 500 💀
 Blade 的 `@yield` 放在 `{{ }}` 里不会被编译，页面直接 500。og/twitter meta 里的用户内容转义必须在 `@section` 源头用 `e()`，layout 保持裸 `@yield`。
 
-### 4.5 `social_platform` 字段已废弃
-迁移 `000003` 曾建 `social_platform` 列；现已改为按 URL 域名识别图标，该列**保留但不再写入/使用**。勿据此字段渲染图标。
+### 4.5 `social_platform` / `social_url` 列已删除
+迁移 `000003` 曾建单链接列 social_platform + social_url；迁移 `000001` 改用 `social_links` JSON 数组后旧列不再读写。迁移 `2026_09_05_000001` 已 drop 这两列，`Entrepreneur` fillable 同步移除。勿据此字段渲染图标。
 
 ### 4.6 抖音图标为占位
 开源图标库无抖音官方字形，`public/icons/douyin.svg` 用的是 TikTok 风格占位。有官方 SVG 可直接替换同名文件。

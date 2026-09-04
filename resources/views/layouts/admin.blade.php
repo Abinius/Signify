@@ -5,29 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   <meta name="csrf-token" content="{{ csrf_token() }}">
   <title>@yield('title', '管理后台') · {{ \App\Models\Setting::get('site_name', 'SIGNIFY') }}</title>
-  <link rel="icon" href="{{ asset('favicon.ico') }}" sizes="48x48">
-  <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32x32.png') }}">
-  <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon-16x16.png') }}">
-  <link rel="apple-touch-icon" href="{{ asset('apple-touch-icon.png') }}">
+  @include('partials.favicons')
   <link rel="stylesheet" href="{{ asset('css/app.css') }}">
   @stack('styles')
   <link rel="preconnect" href="https://fonts.googleapis.cn">
   <link rel="preconnect" href="https://fonts.gstatic.cn" crossorigin>
-  <script>
-    (function () {
-      var FONT_CSS = "css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;700&display=swap";
-      function loadFonts(cdn) {
-        var l = document.createElement("link");
-        l.rel = "stylesheet";
-        l.href = "https://" + cdn + "/" + FONT_CSS;
-        if (cdn !== "fonts.googleapis.com") {
-          l.onerror = function () { loadFonts("fonts.googleapis.com"); };
-        }
-        document.head.appendChild(l);
-      }
-      loadFonts("fonts.googleapis.cn"); /* 国内优先，失败自动切谷歌 */
-    })();
-  </script>
+  @include('partials.font-loader')
   <script defer src="{{ asset('js/alpine.min.js') }}"></script>
 </head>
 <body class="min-h-screen flex flex-col bg-paper" x-data="{ menuOpen: false }"
