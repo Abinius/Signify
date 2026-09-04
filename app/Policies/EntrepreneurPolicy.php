@@ -81,12 +81,4 @@ class EntrepreneurPolicy
     {
         return $user->is_admin;
     }
-
-    /**
-     * 用户是否可以管理（管理员操作）
-     */
-    public function manage(User $user): bool
-    {
-        return $user->is_admin;
-    }
 }

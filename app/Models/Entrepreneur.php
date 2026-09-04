@@ -27,8 +27,6 @@ class Entrepreneur extends Model
         'contact_phone',
         'contact_email',
         'wechat_qrcode',
-        'social_platform',
-        'social_url',
         'social_links',
         'is_featured',
         'status',
