@@ -32,6 +32,13 @@
         <textarea name="site_description" rows="3" class="input-line resize-none">{{ old('site_description', $values['site_description']) }}</textarea>
         @error('site_description') <p class="field-error">{{ $message }}</p> @enderror
       </div>
+      <div>
+        <label class="label-caption text-muted">首页 Banner 图片路径</label>
+        <input type="text" name="banner_image" value="{{ old('banner_image', $values['banner_image']) }}"
+               placeholder="如：/landingbanner.webp 或 https://…" class="input-line">
+        <p class="text-xs text-muted mt-2">落地页 Hero 背景图路径或完整 URL；留空回退默认 banner。</p>
+        @error('banner_image') <p class="field-error">{{ $message }}</p> @enderror
+      </div>
     </div>
 
     {{-- 分享卡片 --}}

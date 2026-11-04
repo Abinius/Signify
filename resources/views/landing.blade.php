@@ -17,14 +17,17 @@
 
   .landing .hero{
     padding:200px 0 140px;text-align:center;position:relative;overflow:hidden;
-    background-image:linear-gradient(rgba(255,255,255,.82),rgba(255,255,255,.82)),url('/landingbanner.webp');
+    background-image:url('{{ \App\Models\Setting::get('banner_image', asset('landingbanner.webp')) }}');
     background-size:cover;background-position:center;background-repeat:no-repeat;
   }
   .landing .hero__eyebrow{margin-bottom:48px}
-  .landing .hero__title{font-size:clamp(40px,6.6vw,88px);line-height:1.18;letter-spacing:.005em;max-width:1100px;margin:0 auto 36px}
-  .landing .hero__sub{font-size:clamp(17px,1.6vw,22px);color:#555;line-height:1.75;max-width:640px;margin:0 auto 64px}
+  .landing .hero .eyebrow{color:rgba(255,255,255,.8)}
+  .landing .hero__title{color:#fff;font-size:clamp(40px,6.6vw,88px);line-height:1.18;letter-spacing:.005em;max-width:1100px;margin:0 auto 36px}
+  .landing .hero__sub{color:rgba(255,255,255,.9);font-size:clamp(17px,1.6vw,22px);line-height:1.75;max-width:640px;margin:0 auto 64px}
   .landing .hero__cta{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-bottom:48px}
-  .landing .hero__cta-note{font-size:12px;font-weight:300;letter-spacing:.08em;color:#999;margin:-24px 0 32px}
+  .landing .hero__cta-note{font-size:12px;font-weight:300;letter-spacing:.08em;color:rgba(255,255,255,.75);margin:-24px 0 32px}
+  .landing .hero .btn--solid{background:transparent;color:#fff;border-color:#fff}
+  .landing .hero .btn--solid:hover{background:#fff;color:#0a0a0a;border-color:#fff}
   .landing .btn{
     display:inline-flex;align-items:center;justify-content:center;gap:10px;
     font-size:14px;font-weight:300;letter-spacing:.1em;padding:15px 38px;border-radius:1px;
@@ -37,15 +40,15 @@
   .landing .btn--ghost:hover{background:#0a0a0a;color:#fff;border-color:#0a0a0a}
   .landing .btn svg{transition:transform .25s ease}
   .landing .btn:hover svg{transform:translateX(2px)}
-  .landing .hero__trust{font-size:12px;font-weight:300;letter-spacing:.28em;color:#999}
+  .landing .hero__trust{font-size:12px;font-weight:300;letter-spacing:.28em;color:rgba(255,255,255,.8)}
   .landing .hero__trust span{margin:0 14px}
-  .landing .hero__trust .dot{color:#ccc}
+  .landing .hero__trust .dot{color:rgba(255,255,255,.5)}
   .landing .hero__social{margin-top:36px}
-  .landing .hero__social-line{font-size:13px;font-weight:300;letter-spacing:.06em;color:#777}
-  .landing .hero__social-line strong{font-weight:400;color:#0a0a0a}
-  .landing .hero__social-line a{color:#555;border-bottom:1px solid #ccc;transition:color .2s,border-color .2s}
-  .landing .hero__social-line a:hover{color:#000;border-color:#000}
-  .landing .hero::after{content:"";position:absolute;left:50%;bottom:0;width:1px;height:60px;background:linear-gradient(to bottom,transparent,#ccc);transform:translateX(-50%)}
+  .landing .hero__social-line{font-size:13px;font-weight:300;letter-spacing:.06em;color:rgba(255,255,255,.85)}
+  .landing .hero__social-line strong{font-weight:400;color:#fff}
+  .landing .hero__social-line a{color:#fff;border-bottom:1px solid rgba(255,255,255,.6);transition:color .2s,border-color .2s}
+  .landing .hero__social-line a:hover{color:#0a0a0a;border-color:#fff}
+  .landing .hero::after{content:"";position:absolute;left:50%;bottom:0;width:1px;height:60px;background:linear-gradient(to bottom,transparent,rgba(255,255,255,.6));transform:translateX(-50%)}
 
   .landing .section__eyebrow{margin-bottom:24px}
   .landing .section__title{font-size:clamp(28px,4vw,48px);line-height:1.25;margin-bottom:48px;max-width:760px}
