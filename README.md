@@ -1,6 +1,15 @@
 # Signify · 企业家形象资产数字化系统
 # Signify · Entrepreneur Digital Asset Platform
 
+[![License: MIT](https://img.shields.io/github/license/Abinius/Signify?style=flat-square)](LICENSE)
+[![Tests](https://github.com/Abinius/Signify/actions/workflows/tests.yml/badge.svg)](https://github.com/Abinius/Signify/actions/workflows/tests.yml)
+[![Website](https://img.shields.io/website?url=https://vour.cn&up_message=online&down_message=offline&label=vour.cn&style=flat-square)](https://vour.cn)
+[![Last Commit](https://img.shields.io/github/last-commit/Abinius/Signify?style=flat-square)](https://github.com/Abinius/Signify/commits/main)
+[![PHP](https://img.shields.io/badge/PHP-8.2+-777BB4?logo=php&logoColor=white&style=flat-square)](https://www.php.net/)
+[![Laravel](https://img.shields.io/badge/Laravel-11-FF2D20?logo=laravel&logoColor=white&style=flat-square)](https://laravel.com/)
+[![MySQL](https://img.shields.io/badge/MySQL-5.7+-4479A1?logo=mysql&logoColor=white&style=flat-square)](https://www.mysql.com/)
+[![Docker](https://img.shields.io/badge/Docker-available-2496ED?logo=docker&logoColor=white&style=flat-square)](docker-compose.yml)
+
 > **每一份引领行业的商业远见，都值得被更广泛地看见。**
 > **Every leading industry vision deserves to be seen by more people.**
 
