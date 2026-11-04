@@ -6,11 +6,11 @@
   html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility}
   .landing{
     font-family:"Noto Sans SC","PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,sans-serif;
-    font-weight:400;color:#0a0a0a;background:#ffffff;line-height:1.8;letter-spacing:.02em;
+    font-weight:400;color:#d2b363;background:#ffffff;line-height:1.8;letter-spacing:.02em;
   }
   .landing h1,.landing h2,.landing h3{font-weight:400;letter-spacing:.01em;line-height:1.2}
   .landing section{padding:120px 0}
-  .landing .btn:focus-visible{outline:2px solid #0a0a0a;outline-offset:3px;border-radius:1px}
+  .landing .btn:focus-visible{outline:2px solid #d2b363;outline-offset:3px;border-radius:1px}
 
   .landing .container{max-width:1240px;margin:0 auto;padding:0 32px}
   .landing .eyebrow{font-size:13px;font-weight:300;letter-spacing:.32em;text-transform:uppercase;color:#999}
@@ -27,17 +27,17 @@
   .landing .hero__cta{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-bottom:48px}
   .landing .hero__cta-note{font-size:12px;font-weight:300;letter-spacing:.08em;color:rgba(255,255,255,.75);margin:-24px 0 32px}
   .landing .hero .btn--solid{background:transparent;color:#fff;border-color:#fff}
-  .landing .hero .btn--solid:hover{background:#fff;color:#0a0a0a;border-color:#fff}
+  .landing .hero .btn--solid:hover{background:#fff;color:#d2b363;border-color:#fff}
   .landing .btn{
     display:inline-flex;align-items:center;justify-content:center;gap:10px;
     font-size:14px;font-weight:300;letter-spacing:.1em;padding:15px 38px;border-radius:1px;
     cursor:pointer;text-decoration:none;border:1px solid transparent;
     transition:background-color .25s ease,color .25s ease,border-color .25s ease,transform .25s ease;
   }
-  .landing .btn--solid{background:#0a0a0a;color:#fff;border-color:#0a0a0a}
-  .landing .btn--solid:hover{background:#000;border-color:#000;transform:translateY(-1px)}
-  .landing .btn--ghost{background:transparent;color:#0a0a0a;border-color:#0a0a0a}
-  .landing .btn--ghost:hover{background:#0a0a0a;color:#fff;border-color:#0a0a0a}
+  .landing .btn--solid{background:#d2b363;color:#fff;border-color:#d2b363}
+  .landing .btn--solid:hover{background:#d2b363;border-color:#d2b363;transform:translateY(-1px)}
+  .landing .btn--ghost{background:transparent;color:#d2b363;border-color:#d2b363}
+  .landing .btn--ghost:hover{background:#d2b363;color:#fff;border-color:#d2b363}
   .landing .btn svg{transition:transform .25s ease}
   .landing .btn:hover svg{transform:translateX(2px)}
   .landing .hero__trust{font-size:12px;font-weight:300;letter-spacing:.28em;color:rgba(255,255,255,.8)}
@@ -47,17 +47,17 @@
   .landing .hero__social-line{font-size:13px;font-weight:300;letter-spacing:.06em;color:rgba(255,255,255,.85)}
   .landing .hero__social-line strong{font-weight:400;color:#fff}
   .landing .hero__social-line a{color:#fff;border-bottom:1px solid rgba(255,255,255,.6);transition:color .2s,border-color .2s}
-  .landing .hero__social-line a:hover{color:#0a0a0a;border-color:#fff}
+  .landing .hero__social-line a:hover{color:#d2b363;border-color:#fff}
   .landing .hero::after{content:"";position:absolute;left:50%;bottom:0;width:1px;height:60px;background:linear-gradient(to bottom,transparent,rgba(255,255,255,.6));transform:translateX(-50%)}
 
   .landing .section__eyebrow{margin-bottom:24px}
   .landing .section__title{font-size:clamp(28px,4vw,48px);line-height:1.25;margin-bottom:48px;max-width:760px}
   .landing .section__body{font-size:clamp(16px,1.4vw,18px);color:#444;line-height:1.95;max-width:720px}
   .landing .section__body p+p{margin-top:1.4em}
-  .landing .section__body strong{font-weight:300;color:#0a0a0a}
+  .landing .section__body strong{font-weight:300;color:#d2b363}
 
   .landing .value{background:#fafafa;border-top:1px solid #eee;border-bottom:1px solid #eee}
-  .landing .value__lede{font-size:clamp(22px,2.6vw,30px);line-height:1.6;color:#0a0a0a;margin-bottom:40px;max-width:880px}
+  .landing .value__lede{font-size:clamp(22px,2.6vw,30px);line-height:1.6;color:#d2b363;margin-bottom:40px;max-width:880px}
   .landing .value__body{margin-top:56px}
 
   .landing .features__grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:#eee;margin-top:64px;border:1px solid #eee}
@@ -67,7 +67,7 @@
   .landing .feature__title{font-size:22px;margin-bottom:18px;line-height:1.3}
   .landing .feature__desc{font-size:15px;font-weight:300;color:#555;line-height:1.85}
 
-  .landing .audience{background:#0a0a0a;color:#fff;text-align:center;padding:140px 0}
+  .landing .audience{background:#d2b363;color:#fff;text-align:center;padding:140px 0}
   .landing .audience .section__eyebrow{color:#666}
   .landing .audience__title{font-size:clamp(32px,5vw,60px);line-height:1.2;margin:0 auto 64px;max-width:900px}
   .landing .audience__list{max-width:760px;margin:0 auto 56px;text-align:left;display:grid;gap:20px}
