@@ -109,6 +109,7 @@
 @endpush
 
 @section('content')
+@php($siteName = \App\Models\Setting::get('site_name', 'SIGNIFY'))
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -127,7 +128,7 @@
     <div class="container">
       <div class="hero__eyebrow eyebrow reveal">企业家形象资产数字化系统</div>
       <h1 class="hero__title reveal delay-1">每一份引领行业的商业远见都值得被看见</h1>
-      <p class="hero__sub reveal delay-2">Signify · 把你的个人价值，放大成看得见的核心竞争力。</p>
+      <p class="hero__sub reveal delay-2">{{ $siteName }} · 把你的个人价值，放大成看得见的核心竞争力。</p>
       <div class="hero__cta reveal delay-3">
         <a href="{{ route('entrepreneurs.index') }}" class="btn btn--solid">更多浏览<svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
       </div>
@@ -147,7 +148,7 @@
   {{-- 价值主张 --}}
   <section class="value" id="why">
     <div class="container">
-      <div class="section__eyebrow eyebrow reveal">为什么是 Signify</div>
+      <div class="section__eyebrow eyebrow reveal">为什么是 {{ $siteName }}</div>
       <p class="value__lede reveal delay-1">
         企业家的个人价值，长期被两头夹击——<br>
         一头是公司品牌，把你的远见归功于组织；<br>
@@ -155,7 +156,7 @@
       </p>
       <div class="value__body section__body reveal delay-2">
         <p>个人形象、行业远见、价值判断——这些最难量化的东西，一直没有一个体面的承载方式。</p>
-        <p><strong>Signify 把它数字化。</strong></p>
+        <p><strong>{{ $siteName }} 把它数字化。</strong></p>
         <p>不卖流量，不卖数据，不参与分发博弈。只做一件事——把企业家的形象资产，变成可被推荐的、看得见的核心竞争力。</p>
       </div>
     </div>
@@ -204,7 +205,7 @@
   {{-- 谁应该加入 --}}
   <section class="audience">
     <div class="container">
-      <div class="section__eyebrow eyebrow reveal">Signify 不服务所有人</div>
+      <div class="section__eyebrow eyebrow reveal">{{ $siteName }} 不服务所有人</div>
       <h2 class="audience__title reveal delay-1">如果你相信，个人价值应该被系统化放大。</h2>
       <ul class="audience__list reveal delay-2">
         <li>在行业里有判断、有远见，但个人形象长期被公司品牌覆盖的企业家</li>
@@ -213,8 +214,8 @@
         <li>相信个人价值应该被系统化放大的独立商业人</li>
       </ul>
       <p class="audience__cta reveal delay-3">
-        Signify 是你的。
-        <em>如果你更需要的是流量和曝光——Signify 不是答案。</em>
+        {{ $siteName }} 是你的。
+        <em>如果你更需要的是流量和曝光——{{ $siteName }} 不是答案。</em>
       </p>
     </div>
   </section>
@@ -223,7 +224,7 @@
   <section class="final">
     <div class="container">
       <h2 class="final__title reveal">让远见，被看见</h2>
-      <p class="final__sub reveal delay-1">Signify · 企业家形象资产数字化系统</p>
+      <p class="final__sub reveal delay-1">{{ $siteName }} · 企业家形象资产数字化系统</p>
       <div class="final__cta reveal delay-2">
         <a href="{{ route('register') }}" class="btn btn--solid">申请推荐<svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
         <a href="{{ route('login') }}" class="btn btn--ghost">登录账户</a>

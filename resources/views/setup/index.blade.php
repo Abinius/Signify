@@ -50,7 +50,7 @@
         return {
           form: {
             host: '127.0.0.1', port: 3306, database: '', username: 'root', password: '',
-            app_name: 'Signify', app_url: window.location.origin,
+            app_name: @json(env('APP_NAME', 'Signify')), app_url: window.location.origin,
             admin_email: '', admin_password: '', admin_password_confirmation: '',
           },
           dbOk: false, testing: false, dbMsg: '',
