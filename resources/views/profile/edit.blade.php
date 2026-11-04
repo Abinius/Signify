@@ -29,13 +29,9 @@
       </form>
     </div>
   @else
-    <p class="mb-4 text-sm text-ink-soft">
-      @if($entrepreneur->status === 'pending')
-        档案已提交；获「推荐」后进入智库。
-      @else
-        完善资料后可生成个人名片，方便分享。
-      @endif
-    </p>
+    @if($entrepreneur->status === 'pending')
+      <p class="mb-4 text-sm text-ink-soft">档案已提交；获「推荐」后进入智库。</p>
+    @endif
 
     {{-- 申请理由弹窗 --}}
     <div x-show="applyModal" x-cloak @keydown.escape.window="applyModal = false"
@@ -59,6 +55,40 @@
           class="border border-hairline bg-surface p-10 space-y-8">
       @csrf
       @method('PATCH')
+
+      {{-- 状态 / 推荐 / 名片：形象照上方一行 --}}
+      <div class="border-y border-hairline py-4 flex items-center justify-between gap-6 flex-wrap">
+        @if($entrepreneur->status === 'pending')
+          <span class="inline-flex items-center gap-1.5 label-caption text-status-warning"><x-icon name="clock" /> 待审核</span>
+        @elseif($entrepreneur->status === 'approved')
+          <span class="inline-flex items-center gap-1.5 label-caption text-status-success"><x-icon name="check" /> 已收录</span>
+        @elseif($entrepreneur->status === 'rejected')
+          <span class="inline-flex items-center gap-1.5 label-caption text-status-danger"><x-icon name="x" /> 已拒绝</span>
+        @endif
+        @if($entrepreneur->status === 'approved')
+          @php
+            $cooldownUntil = $entrepreneur->featured_rejected_at?->addDays(\App\Models\Entrepreneur::FEATURED_COOLDOWN_DAYS);
+            $cooldownDays = $cooldownUntil && $cooldownUntil->isFuture()
+                ? (int) ceil(abs($cooldownUntil->diffInSeconds(now())) / 86400)
+                : 0;
+            $canApply = !$entrepreneur->is_featured
+                && $entrepreneur->featured_request_status !== 'pending'
+                && (!$cooldownUntil || $cooldownUntil->isPast());
+          @endphp
+          @if($entrepreneur->is_featured)
+            <span class="inline-flex items-center gap-1.5 label-caption text-status-success"><x-icon name="star" /> 已推荐</span>
+          @elseif($entrepreneur->featured_request_status === 'pending')
+            <span class="inline-flex items-center gap-1.5 label-caption text-status-warning"><x-icon name="clock" /> 推荐待审核</span>
+          @elseif($entrepreneur->featured_request_status === 'rejected' && !$canApply)
+            <span class="inline-flex items-center gap-1.5 label-caption text-status-danger"><x-icon name="x" /> 未通过 · {{ $cooldownDays }}天后</span>
+          @else
+            <button type="button" @click="applyModal = true"
+                    class="inline-flex items-center gap-1.5 label-caption text-accent hover:opacity-70 transition-opacity"><x-icon name="star" /> 申请推荐</button>
+          @endif
+        @endif
+        <a href="{{ route('entrepreneurs.show', $entrepreneur->share_slug ?? $entrepreneur->id) }}"
+           class="inline-flex items-center gap-1.5 label-caption text-accent hover:opacity-70 transition-opacity"><x-icon name="eye" /> 查看我的名片</a>
+      </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
         <div>
@@ -91,44 +121,9 @@
         </div>
       </div>
 
-      {{-- 名片 / 状态 / 推荐：并列文本（上下线条） --}}
-      <div class="border-y border-hairline py-4 flex items-center justify-between gap-6 flex-wrap">
-        @if($entrepreneur->status === 'pending')
-          <span class="label-caption text-status-warning">待审核</span>
-        @elseif($entrepreneur->status === 'approved')
-          <span class="label-caption text-status-success">已收录</span>
-        @elseif($entrepreneur->status === 'rejected')
-          <span class="label-caption text-status-danger">已拒绝</span>
-        @endif
-        @if($entrepreneur->status === 'approved')
-          @php
-            $cooldownUntil = $entrepreneur->featured_rejected_at?->addDays(\App\Models\Entrepreneur::FEATURED_COOLDOWN_DAYS);
-            $cooldownDays = $cooldownUntil && $cooldownUntil->isFuture()
-                ? (int) ceil($cooldownUntil->diffInSeconds(now()) / 86400)
-                : 0;
-            $canApply = !$entrepreneur->is_featured
-                && $entrepreneur->featured_request_status !== 'pending'
-                && (!$cooldownUntil || $cooldownUntil->isPast());
-          @endphp
-          @if($entrepreneur->is_featured)
-            <span class="label-caption text-status-success">已推荐</span>
-          @elseif($entrepreneur->featured_request_status === 'pending')
-            <span class="label-caption text-status-warning">推荐待审核</span>
-          @elseif($entrepreneur->featured_request_status === 'rejected' && !$canApply)
-            <span class="label-caption text-status-danger">未通过 · {{ $cooldownDays }}天后</span>
-          @else
-            <button type="button" @click="applyModal = true"
-                    class="label-caption text-accent hover:opacity-70 transition-opacity">申请推荐 →</button>
-          @endif
-        @endif
-        <a href="{{ route('entrepreneurs.show', $entrepreneur->share_slug ?? $entrepreneur->id) }}"
-           class="label-caption text-accent hover:opacity-70 transition-opacity">查看我的名片</a>
-      </div>
-
       {{-- 专属链接：vour.cn/u/{slug}，用户自己填 --}}
       <div x-data="slugForm(@js(old('share_slug', $entrepreneur->share_slug ?? '')))">
         <label class="label-caption text-muted">专属链接</label>
-        <p class="mt-1 text-xs text-muted">分享名片时显示的短链地址</p>
         <div class="mt-2 flex items-center gap-2">
           <span class="label-caption text-muted whitespace-nowrap">vour.cn/u/</span>
           <input type="text" name="share_slug" x-model="slug"
@@ -138,7 +133,6 @@
           <span x-show="status" class="label-caption flex-shrink-0"
                 :class="statusClass" x-text="statusText"></span>
         </div>
-        <p class="mt-1 text-xs text-muted">至少含一个字母，仅支持小写字母、数字和连字符</p>
         @error('share_slug') <p class="field-error">{{ $message }}</p> @enderror
       </div>
 

@@ -10,10 +10,14 @@ use Illuminate\Support\Facades\Auth;
 class EntrepreneurController extends Controller
 {
     /**
-     * 首页：登录墙。登录后跳个人详情；无档案则引导创建。
+     * 首页：未登录直接渲染企业家库列表；登录后跳个人详情，无档案则引导创建。
      */
-    public function home()
+    public function home(Request $request)
     {
+        if (! Auth::check()) {
+            return $this->index($request);
+        }
+
         $entrepreneur = Auth::user()->entrepreneur;
 
         return $entrepreneur
