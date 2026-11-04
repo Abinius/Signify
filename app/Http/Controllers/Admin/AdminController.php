@@ -244,6 +244,7 @@ class AdminController extends Controller
             'share_description' => 'nullable|string|max:500',
             'share_image'       => 'nullable|url|max:500',
             'share_image_file'  => 'nullable|file|max:2048',
+            'banner_image'      => 'nullable|string|max:500',
             'footer_copyright'  => 'nullable|string|max:200',
             'icp_number'        => 'nullable|string|max:100',
         ]);
@@ -282,6 +283,7 @@ class AdminController extends Controller
             'share_title'       => 'SIGNIFY — 每一份引领行业的商业远见，都值得被更广泛地看见',
             'share_description' => '不用复杂定义，只用数字化技术，把企业家的个人价值放大成看得见的核心竞争力。',
             'share_image'       => asset('android-chrome-512x512.png'),
+            'banner_image'      => asset('landingbanner.webp'),
             'footer_copyright'  => '© SIGNIFY',
             'icp_number'        => '',
         ];
