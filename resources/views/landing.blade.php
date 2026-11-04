@@ -1,10 +1,5 @@
 @extends('layouts.app')
 
-@section('title', '诚邀您加入Signify，每一份引领行业的商业远见都值得被看见')
-@section('og-title', 'Signify · 每一份引领行业的商业远见，都值得被更广泛地看见')
-@section('og-description', '企业家形象资产数字化系统。把你的个人价值，放大成看得见的核心竞争力。收录制、推荐准入、不卖流量。')
-@section('og-url', url('/'))
-
 @push('styles')
 <style>
   /* ========== 落地页样式（复用于 guest 首页；nav/footer 由系统 layout 提供） ========== */
