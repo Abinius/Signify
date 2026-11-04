@@ -47,7 +47,7 @@
         <button type="button" x-show="s.has_entrepreneur" x-cloak
                 @click="tab='mine'"
                 :class="tab==='mine' ? 'text-ink font-bold' : 'text-muted hover:text-ink'"
-                class="label-caption transition-colors">我的</button>
+                class="label-caption transition-colors">设置</button>
         <button type="button" @click="tab='notif'"
                 :class="tab==='notif' ? 'text-ink font-bold' : 'text-muted hover:text-ink'"
                 class="label-caption transition-colors flex items-center gap-1">
