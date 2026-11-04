@@ -12,19 +12,14 @@ class HomeRedirectTest extends TestCase
     use RefreshDatabase;
 
     /**
-     * 未登录访问首页 → 直接渲染企业家库列表（不跳登录）
+     * 未登录访问首页 → 渲染落地页（不跳登录）
      */
-    public function test_guest_sees_directory_on_home_without_login(): void
+    public function test_guest_sees_landing_on_home_without_login(): void
     {
-        $featured = Entrepreneur::factory()->create([
-            'status' => Entrepreneur::STATUS_APPROVED,
-            'is_featured' => true,
-        ]);
-
         $response = $this->get('/');
 
         $response->assertStatus(200);
-        $response->assertSee($featured->name);
+        $response->assertSee('每一份引领行业的商业远见都值得被看见');
     }
 
     /**
