@@ -10,7 +10,7 @@
 @section('title', '个人中心')
 
 @section('content')
-<div class="max-w-4xl mx-auto px-6 py-16" x-data="profileUpload({{ $errors->has('reason') ? 'true' : 'false' }}, @js(old('social_links', $entrepreneur->social_links ?? [])))">
+<div class="max-w-4xl mx-auto px-6 py-16" x-data="profileUpload(@js(old('social_links', $entrepreneur->social_links ?? [])))">
   <p class="label-caption text-accent mb-4 text-center">MY PROFILE</p>
   <h1 class="font-display text-display-lg font-black text-ink mb-10 text-center">个人中心</h1>
 
@@ -33,62 +33,10 @@
       <p class="mb-4 text-sm text-ink-soft">档案已提交；获「推荐」后进入智库。</p>
     @endif
 
-    {{-- 申请理由弹窗 --}}
-    <div x-show="applyModal" x-cloak @keydown.escape.window="applyModal = false"
-         class="fixed inset-0 z-[300] bg-ink/60 backdrop-blur-sm grid place-items-center p-6"
-         @click.self="applyModal = false">
-      <form method="POST" action="{{ route('profile.featured-request') }}"
-            class="bg-surface border border-hairline p-8 w-full max-w-md shadow-float">
-        @csrf
-        <p class="label-caption text-muted mb-4">推荐申请</p>
-        <label class="label-caption text-muted">申请理由</label>
-        <textarea name="reason" rows="4" required placeholder="请简要说明申请推荐的理由" class="input-line resize-none"></textarea>
-        @error('reason') <p class="field-error">{{ $message }}</p> @enderror
-        <div class="mt-6 flex items-center gap-3 justify-end">
-          <button type="button" @click="applyModal = false" class="label-caption text-muted hover:text-ink">取消</button>
-          <button type="submit" class="btn-ink !py-2 !px-5">提交申请</button>
-        </div>
-      </form>
-    </div>
-
     <form method="POST" action="{{ route('profile.update') }}" enctype="multipart/form-data"
           class="border border-hairline bg-surface p-10 space-y-8">
       @csrf
       @method('PATCH')
-
-      {{-- 状态 / 推荐 / 名片：形象照上方一行 --}}
-      <div class="border-y border-hairline py-4 flex items-center justify-between gap-6 flex-wrap">
-        @if($entrepreneur->status === 'pending')
-          <span class="inline-flex items-center gap-1.5 label-caption text-status-warning"><x-icon name="clock" /> 待审核</span>
-        @elseif($entrepreneur->status === 'approved')
-          <span class="inline-flex items-center gap-1.5 label-caption text-status-success"><x-icon name="check" /> 已收录</span>
-        @elseif($entrepreneur->status === 'rejected')
-          <span class="inline-flex items-center gap-1.5 label-caption text-status-danger"><x-icon name="x" /> 已拒绝</span>
-        @endif
-        @if($entrepreneur->status === 'approved')
-          @php
-            $cooldownUntil = $entrepreneur->featured_rejected_at?->addDays(\App\Models\Entrepreneur::FEATURED_COOLDOWN_DAYS);
-            $cooldownDays = $cooldownUntil && $cooldownUntil->isFuture()
-                ? (int) ceil(abs($cooldownUntil->diffInSeconds(now())) / 86400)
-                : 0;
-            $canApply = !$entrepreneur->is_featured
-                && $entrepreneur->featured_request_status !== 'pending'
-                && (!$cooldownUntil || $cooldownUntil->isPast());
-          @endphp
-          @if($entrepreneur->is_featured)
-            <span class="inline-flex items-center gap-1.5 label-caption text-status-success"><x-icon name="star" /> 已推荐</span>
-          @elseif($entrepreneur->featured_request_status === 'pending')
-            <span class="inline-flex items-center gap-1.5 label-caption text-status-warning"><x-icon name="clock" /> 推荐待审核</span>
-          @elseif($entrepreneur->featured_request_status === 'rejected' && !$canApply)
-            <span class="inline-flex items-center gap-1.5 label-caption text-status-danger"><x-icon name="x" /> 未通过 · {{ $cooldownDays }}天后</span>
-          @else
-            <button type="button" @click="applyModal = true"
-                    class="inline-flex items-center gap-1.5 label-caption text-accent hover:opacity-70 transition-opacity"><x-icon name="star" /> 申请推荐</button>
-          @endif
-        @endif
-        <a href="{{ route('entrepreneurs.show', $entrepreneur->share_slug ?? $entrepreneur->id) }}"
-           class="inline-flex items-center gap-1.5 label-caption text-accent hover:opacity-70 transition-opacity"><x-icon name="eye" /> 查看我的名片</a>
-      </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
         <div>
@@ -119,21 +67,6 @@
           <input type="text" name="name" value="{{ old('name', $entrepreneur->name) }}" class="input-line">
           @error('name') <p class="field-error">{{ $message }}</p> @enderror
         </div>
-      </div>
-
-      {{-- 专属链接：vour.cn/u/{slug}，用户自己填 --}}
-      <div x-data="slugForm(@js(old('share_slug', $entrepreneur->share_slug ?? '')))">
-        <label class="label-caption text-muted">专属链接</label>
-        <div class="mt-2 flex items-center gap-2">
-          <span class="label-caption text-muted whitespace-nowrap">vour.cn/u/</span>
-          <input type="text" name="share_slug" x-model="slug"
-                 @input.debounce.300ms="check"
-                 placeholder="zhangsan" class="input-line flex-1"
-                 value="{{ old('share_slug', $entrepreneur->share_slug) }}">
-          <span x-show="status" class="label-caption flex-shrink-0"
-                :class="statusClass" x-text="statusText"></span>
-        </div>
-        @error('share_slug') <p class="field-error">{{ $message }}</p> @enderror
       </div>
 
       {{-- 裁剪弹窗：形象照 4:5 主裁自动派生 1:1；二维码 1:1 --}}
@@ -289,9 +222,8 @@
   window.SOCIAL_ICONS = @json(config('social-icons.map', []));
   window.SOCIAL_ICONS_DEFAULT = @json(config('social-icons.default', 'google.svg'));
 
-  window.profileUpload = function (applyModal, socialLinks) {
+  window.profileUpload = function (socialLinks) {
     return {
-      applyModal: !!applyModal,
       socialLinks: Array.isArray(socialLinks) ? socialLinks.map(String) : [],
       cropType: null,
       cropSrc: null,
@@ -396,48 +328,6 @@
           self.$refs[refName].files = dt.files;
           if (previewKey) self[previewKey] = canvas.toDataURL('image/jpeg');
         }, 'image/jpeg', 0.9);
-      }
-    };
-  };
-
-  window.slugForm = function (initial) {
-    return {
-      slug: (initial || ''),
-      status: '',
-      checking: false,
-
-      check() {
-        this.slug = this.slug.toLowerCase().replace(/[^a-z0-9-]/g, '');
-        if (this.slug.length < 3) {
-          this.status = '';
-          return;
-        }
-        this.checking = true;
-        this.status = '校验中…';
-        var token = document.querySelector('meta[name="csrf-token"]').content;
-        var self = this;
-        fetch('/my/profile/check-slug?slug=' + encodeURIComponent(this.slug), {
-          headers: { 'X-CSRF-TOKEN': token }
-        })
-          .then(function (r) { return r.json(); })
-          .then(function (data) {
-            self.checking = false;
-            self.status = data.available ? '可用 ✓' : '已被使用';
-          })
-          .catch(function () {
-            self.checking = false;
-            self.status = '';
-          });
-      },
-
-      get statusClass() {
-        if (this.checking) return 'text-muted';
-        if (this.status === '可用 ✓') return 'text-status-success';
-        return 'text-status-danger';
-      },
-
-      get statusText() {
-        return this.status;
       }
     };
   };

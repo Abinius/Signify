@@ -232,6 +232,50 @@ class FeaturedRequestTest extends TestCase
     }
 
     /**
+     * JSON 请求返回 {ok: true}（抽屉内联提交）
+     */
+    public function test_featured_request_returns_json_when_wants_json(): void
+    {
+        $user = User::factory()->create();
+        $entrepreneur = Entrepreneur::factory()->create([
+            'user_id' => $user->id,
+            'status' => Entrepreneur::STATUS_APPROVED,
+            'is_featured' => false,
+        ]);
+
+        $res = $this->actingAs($user)
+            ->withHeader('Accept', 'application/json')
+            ->postJson('/my/profile/featured-request', ['reason' => '深度洞察']);
+
+        $res->assertOk()->assertJsonPath('ok', true);
+        $this->assertSame(
+            Entrepreneur::FEATURED_STATUS_PENDING,
+            Entrepreneur::find($entrepreneur->id)->featured_request_status
+        );
+    }
+
+    /**
+     * 冷却期内 JSON 请求返回 422 + featured 字段错误
+     */
+    public function test_featured_request_json_returns_422_on_cooldown(): void
+    {
+        $user = User::factory()->create();
+        Entrepreneur::factory()->create([
+            'user_id' => $user->id,
+            'status' => Entrepreneur::STATUS_APPROVED,
+            'is_featured' => false,
+            'featured_request_status' => Entrepreneur::FEATURED_STATUS_REJECTED,
+            'featured_rejected_at' => now()->subDays(3),
+        ]);
+
+        $res = $this->actingAs($user)
+            ->withHeader('Accept', 'application/json')
+            ->postJson('/my/profile/featured-request', ['reason' => '再试']);
+
+        $res->assertStatus(422)->assertJsonPath('errors.featured.0', fn ($m) => str_contains($m, '天'));
+    }
+
+    /**
      * 非管理员不能审核推荐申请
      */
     public function test_regular_user_cannot_review_featured(): void
