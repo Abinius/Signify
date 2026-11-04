@@ -13,7 +13,7 @@
   .landing .btn:focus-visible{outline:2px solid #d2b363;outline-offset:3px;border-radius:1px}
 
   .landing .container{max-width:1240px;margin:0 auto;padding:0 32px}
-  .landing .eyebrow{font-size:13px;font-weight:300;letter-spacing:.32em;text-transform:uppercase;color:#999}
+  .landing .eyebrow{font-size:13px;font-weight:300;letter-spacing:.32em;text-transform:uppercase;color:#d2b363}
 
   .landing .hero{
     padding:200px 0 140px;text-align:center;position:relative;overflow:hidden;
@@ -52,7 +52,7 @@
 
   .landing .section__eyebrow{margin-bottom:24px}
   .landing .section__title{font-size:clamp(28px,4vw,48px);line-height:1.25;margin-bottom:48px;max-width:760px}
-  .landing .section__body{font-size:clamp(16px,1.4vw,18px);color:#444;line-height:1.95;max-width:720px}
+  .landing .section__body{font-size:clamp(16px,1.4vw,18px);color:#d2b363;line-height:1.95;max-width:720px}
   .landing .section__body p+p{margin-top:1.4em}
   .landing .section__body strong{font-weight:300;color:#d2b363}
 
@@ -63,22 +63,22 @@
   .landing .features__grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:#eee;margin-top:64px;border:1px solid #eee}
   .landing .feature{background:#fff;padding:48px 40px;transition:background .3s ease}
   .landing .feature:hover{background:#fafafa}
-  .landing .feature__no{font-size:12px;font-weight:300;letter-spacing:.24em;color:#bbb;margin-bottom:24px}
+  .landing .feature__no{font-size:12px;font-weight:300;letter-spacing:.24em;color:#d2b363;margin-bottom:24px}
   .landing .feature__title{font-size:22px;margin-bottom:18px;line-height:1.3}
-  .landing .feature__desc{font-size:15px;font-weight:300;color:#555;line-height:1.85}
+  .landing .feature__desc{font-size:15px;font-weight:300;color:#d2b363;line-height:1.85}
 
   .landing .audience{background:#d2b363;color:#fff;text-align:center;padding:140px 0}
-  .landing .audience .section__eyebrow{color:#666}
+  .landing .audience .section__eyebrow{color:#fff}
   .landing .audience__title{font-size:clamp(32px,5vw,60px);line-height:1.2;margin:0 auto 64px;max-width:900px}
   .landing .audience__list{max-width:760px;margin:0 auto 56px;text-align:left;display:grid;gap:20px}
-  .landing .audience__list li{font-size:clamp(16px,1.5vw,19px);color:#bbb;line-height:1.7;padding-left:24px;position:relative}
-  .landing .audience__list li::before{content:"—";position:absolute;left:0;color:#555}
+  .landing .audience__list li{font-size:clamp(16px,1.5vw,19px);color:#fff;line-height:1.7;padding-left:24px;position:relative}
+  .landing .audience__list li::before{content:"—";position:absolute;left:0;color:#fff}
   .landing .audience__cta{font-size:clamp(17px,1.8vw,22px);color:#fff;line-height:1.6;max-width:680px;margin:0 auto}
-  .landing .audience__cta em{font-style:normal;color:#888;display:block;margin-top:16px;font-size:15px}
+  .landing .audience__cta em{font-style:normal;color:#fff;display:block;margin-top:16px;font-size:15px}
 
   .landing .final{padding:160px 0;text-align:center}
   .landing .final__title{font-size:clamp(36px,6vw,72px);line-height:1.2;margin-bottom:28px}
-  .landing .final__sub{font-size:clamp(15px,1.4vw,18px);color:#666;letter-spacing:.08em;margin-bottom:56px}
+  .landing .final__sub{font-size:clamp(15px,1.4vw,18px);color:#d2b363;letter-spacing:.08em;margin-bottom:56px}
   .landing .final__cta{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
 
   .landing .reveal{opacity:0;transform:translateY(28px);transition:opacity .9s cubic-bezier(.22,1,.36,1),transform .9s cubic-bezier(.22,1,.36,1);will-change:transform,opacity}
