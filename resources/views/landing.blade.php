@@ -113,10 +113,10 @@
 {
   "@context": "https://schema.org",
   "@type": "WebSite",
-  "name": "Signify",
-  "alternateName": "Signify · 企业家形象资产数字化系统",
+  "name": "{{ \App\Models\Setting::get('site_name', 'SIGNIFY') }}",
+  "alternateName": "{{ \App\Models\Setting::get('share_title', 'SIGNIFY — 每一份引领行业的商业远见，都值得被更广泛地看见') }}",
   "url": "{{ url('/') }}",
-  "description": "企业家形象资产数字化系统。把你的个人价值，放大成看得见的核心竞争力。收录制、推荐准入、不卖流量。",
+  "description": "{{ \App\Models\Setting::get('site_description', '') }}",
   "inLanguage": "zh-CN"
 }
 </script>
