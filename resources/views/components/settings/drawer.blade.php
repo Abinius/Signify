@@ -80,9 +80,9 @@
       </template>
 
       <template x-if="!loading && s.has_entrepreneur">
-        <div class="px-4 py-4 space-y-4">
+        <div class="px-4 py-4 space-y-3">
           {{-- 认证 --}}
-          <div>
+          <div class="border border-hairline p-3">
             <p class="label-caption text-muted mb-1.5">认证</p>
             <span class="inline-flex items-center gap-1.5 label-caption"
                   :class="statusColor(s.status)"
@@ -90,7 +90,7 @@
           </div>
 
           {{-- 推荐 --}}
-          <div>
+          <div class="border border-hairline p-3">
             <p class="label-caption text-muted mb-1.5">推荐</p>
             <template x-if="s.featured_label">
               <span class="inline-flex items-center gap-1.5 label-caption"
@@ -117,7 +117,7 @@
           </div>
 
           {{-- 专属链接 --}}
-          <div>
+          <div class="border border-hairline p-3">
             <p class="label-caption text-muted mb-1.5">专属链接</p>
             <div class="flex items-stretch border border-hairline">
               <span class="px-2 flex items-center text-xs text-muted bg-surface border-r border-hairline">/u/</span>
@@ -137,7 +137,7 @@
           </div>
 
           {{-- 名片 --}}
-          <div class="pt-2">
+          <div class="border border-hairline p-3 text-center">
             <a :href="s.card_url"
                class="inline-flex items-center gap-1.5 label-caption text-accent hover:opacity-70 transition-opacity">
               查看我的名片 →
