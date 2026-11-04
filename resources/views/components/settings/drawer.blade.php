@@ -45,10 +45,10 @@
     <div class="px-4 py-3 border-b border-hairline flex items-center justify-between gap-3">
       <div class="flex items-center gap-4">
         <button type="button" x-show="s.has_entrepreneur" x-cloak
-                @click="tab='slug'; loadSummary()"
-                :class="tab==='slug' ? 'text-ink font-bold' : 'text-muted hover:text-ink'"
-                class="label-caption transition-colors">专属链接</button>
-        <button type="button" @click="tab='notif'; loadUnread()"
+                @click="tab='mine'"
+                :class="tab==='mine' ? 'text-ink font-bold' : 'text-muted hover:text-ink'"
+                class="label-caption transition-colors">我的</button>
+        <button type="button" @click="tab='notif'"
                 :class="tab==='notif' ? 'text-ink font-bold' : 'text-muted hover:text-ink'"
                 class="label-caption transition-colors flex items-center gap-1">
           通知
@@ -63,34 +63,85 @@
               class="label-caption text-muted hover:text-accent transition-colors">全部已读</button>
     </div>
 
-    {{-- 专属链接 --}}
-    <div x-show="tab==='slug'" x-cloak class="px-4 py-5">
+    {{-- 我的 --}}
+    <div x-show="tab==='mine'" class="divide-y divide-hairline max-h-96 overflow-y-auto">
       <template x-if="loading">
-        <div class="space-y-2">
+        <div class="px-4 py-6 space-y-2">
           <div class="h-4 w-2/3 bg-surface"></div>
           <div class="h-8 w-full bg-surface"></div>
         </div>
       </template>
-      <template x-if="!loading">
-        <div class="space-y-3">
+
+      <template x-if="!loading && !s.has_entrepreneur">
+        <div class="px-4 py-6 text-center">
+          <p class="text-sm text-muted mb-3">尚未创建企业家档案</p>
+          <a href="@json(route('profile.show'))" class="label-caption text-accent hover:opacity-70 transition-opacity">前往创建 →</a>
+        </div>
+      </template>
+
+      <template x-if="!loading && s.has_entrepreneur">
+        <div class="px-4 py-4 space-y-4">
+          {{-- 认证 --}}
           <div>
-            <label class="label-caption text-muted">专属链接</label>
-            <p class="text-[11px] text-muted mt-0.5">vour.cn/u/<span x-text="draft || 'your-slug'"></span></p>
+            <p class="label-caption text-muted mb-1.5">认证</p>
+            <span class="inline-flex items-center gap-1.5 label-caption"
+                  :class="statusColor(s.status)"
+                  x-text="s.status_label"></span>
           </div>
-          <div class="flex items-stretch border border-hairline">
-            <span class="px-2 flex items-center text-xs text-muted bg-surface border-r border-hairline">/u/</span>
-            <input type="text" x-model="draft" @input.debounce.400ms="checkSlug()"
-                   placeholder="your-slug"
-                   pattern="[a-z0-9]+(?:-[a-z0-9]+)*"
-                   class="flex-1 px-2 py-2 text-sm bg-paper text-ink outline-none min-w-0">
+
+          {{-- 推荐 --}}
+          <div>
+            <p class="label-caption text-muted mb-1.5">推荐</p>
+            <template x-if="s.featured_label">
+              <span class="inline-flex items-center gap-1.5 label-caption"
+                    :class="featuredColor(s)"
+                    x-text="s.featured_label"></span>
+            </template>
+            <template x-if="s.can_apply_featured">
+              <div class="mt-2">
+                <button type="button" x-show="!applying" @click="applying = true"
+                        class="label-caption text-accent hover:opacity-70 transition-opacity">申请推荐 →</button>
+                <div x-show="applying" x-cloak class="space-y-2">
+                  <textarea x-model="reason" rows="3" placeholder="请简要说明申请理由"
+                            class="input-line resize-none text-sm w-full"></textarea>
+                  <p x-show="featuredError" x-cloak class="field-error" x-text="featuredError"></p>
+                  <div class="flex items-center gap-3 justify-end">
+                    <button type="button" @click="applying = false; reason = ''; featuredError = ''"
+                            class="label-caption text-muted hover:text-ink">取消</button>
+                    <button type="button" @click="applyFeatured()"
+                            class="btn-ink !py-1.5 !px-4 text-sm">提交</button>
+                  </div>
+                </div>
+              </div>
+            </template>
           </div>
-          <p x-show="slugMsg" x-cloak class="text-[11px]"
-             :class="slugOk ? 'text-status-success' : 'text-status-danger'"
-             x-text="slugMsg"></p>
-          <div class="flex items-center gap-3 justify-end pt-1">
-            <span x-show="saved" x-cloak class="text-[11px] text-status-success">已保存 ✓</span>
-            <button type="button" @click="saveSlug()" :disabled="saving"
-                    class="btn-ink !py-1.5 !px-4 text-sm disabled:opacity-50">保存</button>
+
+          {{-- 专属链接 --}}
+          <div>
+            <p class="label-caption text-muted mb-1.5">专属链接</p>
+            <div class="flex items-stretch border border-hairline">
+              <span class="px-2 flex items-center text-xs text-muted bg-surface border-r border-hairline">/u/</span>
+              <input type="text" x-model="draft" @input.debounce.400ms="checkSlug()"
+                     placeholder="your-slug"
+                     pattern="[a-z0-9]+(?:-[a-z0-9]+)*"
+                     class="flex-1 px-2 py-2 text-sm bg-paper text-ink outline-none min-w-0">
+            </div>
+            <p x-show="slugMsg" x-cloak class="text-[11px] mt-1"
+               :class="slugOk ? 'text-status-success' : 'text-status-danger'"
+               x-text="slugMsg"></p>
+            <div class="flex items-center gap-3 justify-end mt-2">
+              <span x-show="saved" x-cloak class="text-[11px] text-status-success">已保存 ✓</span>
+              <button type="button" @click="saveSlug()" :disabled="saving"
+                      class="btn-ink !py-1.5 !px-4 text-sm disabled:opacity-50">保存</button>
+            </div>
+          </div>
+
+          {{-- 名片 --}}
+          <div class="pt-2">
+            <a :href="s.card_url"
+               class="inline-flex items-center gap-1.5 label-caption text-accent hover:opacity-70 transition-opacity">
+              查看我的名片 →
+            </a>
           </div>
         </div>
       </template>
@@ -142,6 +193,11 @@ function settingsDrawer(config) {
     featured_approved: 'bg-status-success',
     featured_rejected: 'bg-status-danger',
   };
+  const STATUS_COLOR = {
+    pending:   'text-status-warning',
+    approved:  'text-status-success',
+    rejected:  'text-status-danger',
+  };
   return {
     open: false,
     tab: 'notif',
@@ -151,6 +207,9 @@ function settingsDrawer(config) {
     unread: 0,
     lastUnread: 0,
     pulse: false,
+    applying: false,
+    reason: '',
+    featuredError: '',
     draft: '',
     slugMsg: '',
     slugOk: false,
@@ -160,10 +219,16 @@ function settingsDrawer(config) {
     ...config,
     kindIcon(k) { return ICONS[k] || ICONS.featured_submitted; },
     kindColor(k) { return BARS[k] || 'bg-muted'; },
+    statusColor(st) { return STATUS_COLOR[st] || 'text-muted'; },
+    featuredColor(s) {
+      if (s.is_featured) return 'text-status-success';
+      if (s.featured_request_status === 'pending') return 'text-status-warning';
+      if (s.featured_request_status === 'rejected') return 'text-status-danger';
+      return 'text-muted';
+    },
     toggle() {
       this.open = !this.open;
       if (this.open) {
-        this.tab = this.s.has_entrepreneur ? 'slug' : 'notif';
         this.loadSummary();
         this.loadUnread();
       }
@@ -175,7 +240,8 @@ function settingsDrawer(config) {
         if (res.ok) {
           this.s = await res.json();
           this.draft = this.s.slug || '';
-          this.tab = this.s.has_entrepreneur ? 'slug' : 'notif';
+          if (this.s.has_entrepreneur) this.tab = this.tab === 'notif' && this.open ? this.tab : 'mine';
+          if (this.s.has_entrepreneur && !this.open) this.tab = 'mine';
         }
       } catch (e) {}
       this.loading = false;
@@ -272,6 +338,38 @@ function settingsDrawer(config) {
       }
       this.saving = false;
     },
+    async applyFeatured() {
+      this.featuredError = '';
+      if (!this.reason.trim()) {
+        this.featuredError = '请填写申请理由';
+        return;
+      }
+      try {
+        const res = await fetch(this.s.featured_url, {
+          method: 'POST',
+          headers: {
+            'X-CSRF-TOKEN': this.csrf,
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ reason: this.reason }),
+        });
+        if (res.ok) {
+          this.applying = false;
+          this.reason = '';
+          this.loadSummary();
+          return;
+        }
+        if (res.status === 422) {
+          const data = await res.json();
+          this.featuredError = data.errors?.featured?.[0] || data.message || '提交失败';
+          return;
+        }
+        this.featuredError = '提交失败，请稍后再试';
+      } catch (e) {
+        this.featuredError = '网络错误';
+      }
+    },
     boot() {
       this.loadSummary();
       this.loadUnread();
@@ -279,7 +377,7 @@ function settingsDrawer(config) {
       document.addEventListener('visibilitychange', () => {
         if (!document.hidden && this.open) {
           this.loadUnread();
-          if (this.tab === 'slug') this.loadSummary();
+          if (this.tab === 'mine') this.loadSummary();
         }
       });
     },
