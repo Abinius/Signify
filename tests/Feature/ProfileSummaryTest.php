@@ -1,0 +1,82 @@
+<?php
+
+namespace Tests\Feature;
+
+use App\Models\Entrepreneur;
+use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
+
+class ProfileSummaryTest extends TestCase
+{
+    use RefreshDatabase;
+
+    public function test_summary_returns_slug_and_urls(): void
+    {
+        $user = User::factory()->create();
+        Entrepreneur::factory()->create([
+            'user_id' => $user->id,
+            'share_slug' => 'abin',
+        ]);
+
+        $res = $this->actingAs($user)->getJson('/my/summary');
+
+        $res->assertOk()
+            ->assertJsonPath('has_entrepreneur', true)
+            ->assertJsonPath('slug', 'abin')
+            ->assertJsonPath('check_slug_url', route('profile.check-slug'))
+            ->assertJsonPath('update_url', route('profile.update'));
+    }
+
+    public function test_summary_no_entrepreneur(): void
+    {
+        $user = User::factory()->create();
+
+        $res = $this->actingAs($user)->getJson('/my/summary');
+
+        $res->assertOk()->assertJsonPath('has_entrepreneur', false);
+    }
+
+    public function test_summary_requires_auth(): void
+    {
+        $this->getJson('/my/summary')->assertUnauthorized();
+    }
+
+    /**
+     * 抽屉内联保存专属链接：PATCH JSON 只提交 share_slug
+     */
+    public function test_slug_can_be_updated_via_json(): void
+    {
+        $user = User::factory()->create();
+        Entrepreneur::factory()->create([
+            'user_id' => $user->id,
+            'status' => Entrepreneur::STATUS_APPROVED,
+            'share_slug' => null,
+        ]);
+
+        $res = $this->actingAs($user)
+            ->withHeader('Accept', 'application/json')
+            ->postJson('/my/profile', ['_method' => 'PATCH', 'share_slug' => 'new-slug']);
+
+        $res->assertOk()->assertJsonPath('ok', true)->assertJsonPath('slug', 'new-slug');
+        $this->assertSame('new-slug', Entrepreneur::first()->share_slug);
+    }
+
+    /**
+     * 占用的 slug 不可保存：返回 422
+     */
+    public function test_taken_slug_rejected_via_json(): void
+    {
+        $owner = User::factory()->create();
+        Entrepreneur::factory()->create(['user_id' => $owner->id, 'share_slug' => 'taken']);
+
+        $user = User::factory()->create();
+        Entrepreneur::factory()->create(['user_id' => $user->id, 'status' => Entrepreneur::STATUS_APPROVED]);
+
+        $res = $this->actingAs($user)
+            ->withHeader('Accept', 'application/json')
+            ->postJson('/my/profile', ['_method' => 'PATCH', 'share_slug' => 'taken']);
+
+        $res->assertStatus(422);
+    }
+}

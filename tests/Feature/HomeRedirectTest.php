@@ -12,13 +12,19 @@ class HomeRedirectTest extends TestCase
     use RefreshDatabase;
 
     /**
-     * 未登录访问首页 → 跳转登录页（登录墙）
+     * 未登录访问首页 → 直接渲染企业家库列表（不跳登录）
      */
-    public function test_guest_redirected_to_login_from_home(): void
+    public function test_guest_sees_directory_on_home_without_login(): void
     {
+        $featured = Entrepreneur::factory()->create([
+            'status' => Entrepreneur::STATUS_APPROVED,
+            'is_featured' => true,
+        ]);
+
         $response = $this->get('/');
 
-        $response->assertRedirect('/login');
+        $response->assertStatus(200);
+        $response->assertSee($featured->name);
     }
 
     /**

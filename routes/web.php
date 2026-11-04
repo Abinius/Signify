@@ -3,6 +3,7 @@
 use App\Http\Controllers\EntrepreneurController;
 use App\Http\Controllers\MyProfileController;
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\NotificationController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -10,7 +11,7 @@ use Illuminate\Support\Facades\Route;
 | 公开路由
 |--------------------------------------------------------------------------
 */
-Route::get('/', [EntrepreneurController::class, 'home'])->middleware('auth')->name('home');
+Route::get('/', [EntrepreneurController::class, 'home'])->name('home');
 Route::get('/entrepreneurs', [EntrepreneurController::class, 'index'])->name('entrepreneurs.index');
 
 /*
@@ -40,8 +41,17 @@ Route::middleware(['auth'])->group(function () {
     // 短链可用性实时校验（AJAX 端点）
     Route::get('/my/profile/check-slug', [MyProfileController::class, 'checkSlug'])->name('profile.check-slug');
 
+    // 设置抽屉用的档案概览（AJAX）
+    Route::get('/my/summary', [MyProfileController::class, 'summary'])->name('profile.summary');
+
     // 推荐申请
     Route::post('/my/profile/featured-request', [MyProfileController::class, 'requestFeatured'])->name('profile.featured-request');
+
+    // 站内通知
+    Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
+    Route::get('/notifications/unread', [NotificationController::class, 'unread'])->name('notifications.unread');
+    Route::post('/notifications/{id}/read', [NotificationController::class, 'markRead'])->name('notifications.read');
+    Route::post('/notifications/read-all', [NotificationController::class, 'markAllRead'])->name('notifications.read-all');
 });
 
 /*

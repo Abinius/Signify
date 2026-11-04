@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\BatchActionRequest;
 use App\Models\Entrepreneur;
 use App\Models\Setting;
+use App\Notifications\EntrepreneurNotification;
 use App\Services\AvatarService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -82,6 +83,8 @@ class AdminController extends Controller
 
         $entrepreneur->update(['status' => Entrepreneur::STATUS_APPROVED]);
 
+        $entrepreneur->user?->notify(new EntrepreneurNotification(EntrepreneurNotification::APPROVED, $entrepreneur));
+
         return redirect()->back()->with('success', "已通过 {$entrepreneur->name} 的认证申请");
     }
 
@@ -93,6 +96,8 @@ class AdminController extends Controller
         $this->authorize('reject', $entrepreneur);
 
         $entrepreneur->update(['status' => Entrepreneur::STATUS_REJECTED]);
+
+        $entrepreneur->user?->notify(new EntrepreneurNotification(EntrepreneurNotification::REJECTED, $entrepreneur));
 
         return redirect()->back()->with('success', "已拒绝 {$entrepreneur->name} 的认证申请");
     }
@@ -129,6 +134,8 @@ class AdminController extends Controller
             'featured_rejected_at' => null,
         ]);
 
+        $entrepreneur->user?->notify(new EntrepreneurNotification(EntrepreneurNotification::FEATURED_APPROVED, $entrepreneur));
+
         return redirect()->back()->with('success', "已通过 {$entrepreneur->name} 的推荐申请");
     }
 
@@ -143,6 +150,8 @@ class AdminController extends Controller
             'featured_request_status' => Entrepreneur::FEATURED_STATUS_REJECTED,
             'featured_rejected_at' => now(),
         ]);
+
+        $entrepreneur->user?->notify(new EntrepreneurNotification(EntrepreneurNotification::FEATURED_REJECTED, $entrepreneur));
 
         return redirect()->back()->with('success', "已拒绝 {$entrepreneur->name} 的推荐申请");
     }
@@ -176,6 +185,7 @@ class AdminController extends Controller
             foreach ($entrepreneurs as $entrepreneur) {
                 if ($user->can('approve', $entrepreneur)) {
                     $entrepreneur->update(['status' => Entrepreneur::STATUS_APPROVED]);
+                    $entrepreneur->user?->notify(new EntrepreneurNotification(EntrepreneurNotification::APPROVED, $entrepreneur));
                     $approvedCount++;
                 }
             }
@@ -200,6 +210,7 @@ class AdminController extends Controller
             foreach ($entrepreneurs as $entrepreneur) {
                 if ($user->can('reject', $entrepreneur)) {
                     $entrepreneur->update(['status' => Entrepreneur::STATUS_REJECTED]);
+                    $entrepreneur->user?->notify(new EntrepreneurNotification(EntrepreneurNotification::REJECTED, $entrepreneur));
                     $rejectedCount++;
                 }
             }

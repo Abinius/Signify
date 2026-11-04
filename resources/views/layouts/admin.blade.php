@@ -28,6 +28,8 @@
     </svg>
   </button>
 
+  <x-settings.drawer />
+
   {{-- 全屏菜单弹窗 --}}
   <div x-show="menuOpen" x-cloak
        @keydown.escape.window="menuOpen = false"

@@ -68,16 +68,6 @@ class EntrepreneurPolicyTest extends TestCase
     }
 
     /**
-     * 未登录访问首页 → 跳转登录页（登录墙）
-     */
-    public function test_guest_redirected_to_login_from_home(): void
-    {
-        $response = $this->get('/');
-
-        $response->assertRedirect('/login');
-    }
-
-    /**
      * 用户可以更新职务字段
      */
     public function test_user_can_update_title(): void
