@@ -121,18 +121,16 @@
             <p class="label-caption text-muted mb-1.5">专属链接</p>
             <div class="flex items-stretch border border-hairline">
               <span class="px-2 flex items-center text-xs text-muted bg-surface border-r border-hairline">/u/</span>
-              <input type="text" x-model="draft" @input.debounce.400ms="checkSlug()"
-                     placeholder="your-slug"
+              <input type="text" x-model="draft" @input.debounce.400ms="checkSlug()" @blur="onSlugBlur()"
+                     placeholder="your-slug" :disabled="saving"
                      pattern="[a-z0-9]+(?:-[a-z0-9]+)*"
-                     class="flex-1 px-2 py-2 text-sm bg-paper text-ink outline-none min-w-0">
+                     class="flex-1 px-2 py-2 text-sm bg-paper text-ink outline-none min-w-0 disabled:opacity-60">
             </div>
-            <p x-show="slugMsg" x-cloak class="text-[11px] mt-1"
-               :class="slugOk ? 'text-status-success' : 'text-status-danger'"
-               x-text="slugMsg"></p>
-            <div class="flex items-center gap-3 justify-end mt-2">
+            <div class="flex items-center justify-between mt-1.5 min-h-[16px]">
+              <p x-show="slugMsg" x-cloak class="text-[11px]"
+                 :class="slugOk ? 'text-status-success' : 'text-status-danger'"
+                 x-text="slugMsg"></p>
               <span x-show="saved" x-cloak class="text-[11px] text-status-success">已保存 ✓</span>
-              <button type="button" @click="saveSlug()" :disabled="saving"
-                      class="btn-ink !py-1.5 !px-4 text-sm disabled:opacity-50">保存</button>
             </div>
           </div>
 
@@ -213,6 +211,7 @@ function settingsDrawer(config) {
     draft: '',
     slugMsg: '',
     slugOk: false,
+    checking: false,
     saving: false,
     saved: false,
     busy: {},
@@ -286,20 +285,36 @@ function settingsDrawer(config) {
       this.slugMsg = '';
       this.slugOk = false;
       const v = this.draft.trim();
-      if (!v) { this.slugMsg = '留空则清除专属链接'; return; }
+      if (!v) return;
       if (v.length < 3) { this.slugMsg = '至少 3 个字符'; return; }
       if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(v)) { this.slugMsg = '仅限小写字母、数字、短横线'; return; }
       if (v === this.s.slug) { this.slugMsg = '当前即此值'; this.slugOk = true; return; }
+      this.checking = true;
       try {
         const res = await fetch(this.s.check_slug_url + '?slug=' + encodeURIComponent(v), {
           headers: { 'Accept': 'application/json' },
         });
         if (res.ok) {
           const data = await res.json();
-          this.slugOk = !!data.available;
-          this.slugMsg = data.available ? '可用 ✓' : '已被占用';
+          if (this.draft.trim() === v) {
+            this.slugOk = !!data.available;
+            this.slugMsg = data.available ? '可用 ✓' : '已被占用';
+          }
         }
       } catch (e) {}
+      this.checking = false;
+    },
+    async onSlugBlur() {
+      const v = this.draft.trim();
+      if (!v) {
+        this.draft = this.s.slug || '';
+        this.slugMsg = '';
+        this.slugOk = false;
+        return;
+      }
+      await this.checkSlug();
+      if (!this.slugOk || v === this.s.slug) return;
+      await this.saveSlug();
     },
     async saveSlug() {
       const v = this.draft.trim();
