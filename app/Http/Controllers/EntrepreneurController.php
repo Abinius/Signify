@@ -21,7 +21,7 @@ class EntrepreneurController extends Controller
         $entrepreneur = Auth::user()->entrepreneur;
 
         return $entrepreneur
-            ? redirect()->route('entrepreneurs.show', $entrepreneur->share_slug ?? $entrepreneur->id)
+            ? redirect()->to($entrepreneur->url)
             : redirect()->route('profile.show');
     }
 
@@ -56,33 +56,42 @@ class EntrepreneurController extends Controller
     }
 
     /**
-     * 企业家详情。
-     *
-     * 双入口：
-     * - `/u/{slug}` → 短链入口（named route: entrepreneurs.show），按 share_slug 查找
-     * - `/entrepreneurs/{id}` → 旧数字链接兼容入口（无名路由），按 id 查找
-     *
-     * 按路由名区分查询字段，避免 slug 与 id 混淆（如 /u/123 不会误落到 id=123）。
+     * 短链入口 /u/{slug}：按 share_slug 查找。
+     * 路由层正则已排除纯数字参数，纯数字只走 /entrepreneurs/{id}。
      * 访客仅可见已认证档案；本人可见自己的档案（含待审核/已拒绝）。
-     *
-     * slug 路由下若参数为纯数字，按 id 回退查询：保存层拒绝纯数字 slug
-     * （MyProfileController::checkSlug 与 ProfileUpdateRequest 均剔除 ctype_digit），
-     * 故 DB 中不存在纯数字 share_slug，纯数字参数必然是 home()/og-url 等处
-     * `$share_slug ?? $id` 回退生成的 id，按 id 查才不会 404。
      */
-    public function show(Request $request, string $idOrSlug)
+    public function showBySlug(Request $request, string $slug)
     {
-        $entrepreneur = Entrepreneur::when(
-            $request->routeIs('entrepreneurs.show') && !ctype_digit($idOrSlug),
-            fn ($q) => $q->where('share_slug', $idOrSlug),
-            fn ($q) => $q->where('id', (int) $idOrSlug),
-        )
+        $entrepreneur = Entrepreneur::where('share_slug', $slug)
             ->where(function ($q) {
                 $q->where('status', Entrepreneur::STATUS_APPROVED)
                     ->orWhere('user_id', Auth::id());
             })
             ->firstOrFail();
 
+        return $this->display($request, $entrepreneur);
+    }
+
+    /**
+     * 旧数字链接入口 /entrepreneurs/{id}：按 id 查找（SEO fallback，不 301）。
+     */
+    public function showById(Request $request, int $id)
+    {
+        $entrepreneur = Entrepreneur::where('id', $id)
+            ->where(function ($q) {
+                $q->where('status', Entrepreneur::STATUS_APPROVED)
+                    ->orWhere('user_id', Auth::id());
+            })
+            ->firstOrFail();
+
+        return $this->display($request, $entrepreneur);
+    }
+
+    /**
+     * 共享渲染出口：浏览计数 + 详情视图。
+     */
+    private function display(Request $request, Entrepreneur $entrepreneur)
+    {
         $this->trackView($request, $entrepreneur);
 
         return view('entrepreneurs.show', [

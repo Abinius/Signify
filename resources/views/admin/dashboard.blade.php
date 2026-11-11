@@ -68,7 +68,7 @@
                   @csrf
                   <button class="btn-outline !py-2 !px-5">拒绝</button>
                 </form>
-                <a href="{{ route('entrepreneurs.show', $entrepreneur->id) }}" target="_blank" rel="noopener"
+                <a href="{{ $entrepreneur->url }}" target="_blank" rel="noopener"
                    class="label-caption text-muted hover:text-ink px-2 transition-colors">查看</a>
               </div>
             </div>
@@ -118,7 +118,7 @@
                   @csrf
                   <button class="btn-outline !py-2 !px-5">拒绝</button>
                 </form>
-                <a href="{{ route('entrepreneurs.show', $entrepreneur->id) }}" target="_blank" rel="noopener"
+                <a href="{{ $entrepreneur->url }}" target="_blank" rel="noopener"
                    class="label-caption text-muted hover:text-ink px-2 transition-colors">查看</a>
               </div>
             </div>

@@ -33,11 +33,7 @@
   }
 }
 
-/* 编辑风：细分割线元素 */
 @layer components {
-  .hairline-b {
-    @apply border-b border-hairline;
-  }
   .btn-ink {
     @apply inline-block bg-ink text-paper px-6 py-3 text-sm tracking-wide hover:bg-ink-soft transition-colors duration-200;
   }
