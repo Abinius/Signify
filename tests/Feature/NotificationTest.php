@@ -98,9 +98,9 @@ class NotificationTest extends TestCase
     }
 
     /**
-     * index 接口返回已读+未读，含 kind 与 read_at 字段
+     * 通知列表页渲染已读+未读（含标题）
      */
-    public function test_index_returns_all_with_kind_and_read_at(): void
+    public function test_index_page_lists_all_notifications(): void
     {
         $user = User::factory()->create();
         $entrepreneur = Entrepreneur::factory()->create(['user_id' => $user->id]);
@@ -109,13 +109,11 @@ class NotificationTest extends TestCase
         $user->notify(new EntrepreneurNotification(EntrepreneurNotification::REJECTED, $entrepreneur));
         $user->fresh()->notifications()->first()->markAsRead();
 
-        $res = $this->actingAs($user)->get('/notifications')->assertOk();
-
-        $this->assertCount(2, $res->json());
-        $this->assertNotNull($res->json('0.read_at'));
-        $this->assertNull($res->json('1.read_at'));
-        $this->assertSame('approved', $res->json('0.kind'));
-        $this->assertSame('rejected', $res->json('1.kind'));
+        $this->actingAs($user)
+            ->get('/notifications')
+            ->assertOk()
+            ->assertSee('认证已通过')
+            ->assertSee('认证未通过');
     }
 
     /**
