@@ -216,6 +216,31 @@
       </div>
     </form>
   @endif
+
+  {{-- 修改密码：登录用户均可，与有无企业家档案无关 --}}
+  <div class="mt-10 border border-hairline bg-surface p-10">
+    <h2 class="font-display text-display-md font-bold text-ink mb-2">修改密码</h2>
+    <p class="text-sm text-muted mb-8">需先验证当前密码。</p>
+    <form method="POST" action="{{ route('password.update') }}" class="max-w-md space-y-6">
+      @csrf
+      @method('PUT')
+      <div>
+        <label class="label-caption text-muted">当前密码</label>
+        <input type="password" name="current_password" required autocomplete="current-password" class="input-line">
+        @error('current_password') <p class="field-error">{{ $message }}</p> @enderror
+      </div>
+      <div>
+        <label class="label-caption text-muted">新密码</label>
+        <input type="password" name="password" required autocomplete="new-password" class="input-line">
+        @error('password') <p class="field-error">{{ $message }}</p> @enderror
+      </div>
+      <div>
+        <label class="label-caption text-muted">确认新密码</label>
+        <input type="password" name="password_confirmation" required autocomplete="new-password" class="input-line">
+      </div>
+      <button type="submit" class="btn-ink">更新密码</button>
+    </form>
+  </div>
 </div>
 <script>
   // 社交图标映射：与 PHP 端共用 config/social-icons.php（单一来源，避免两端漂移）

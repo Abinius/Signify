@@ -85,6 +85,11 @@
               <span class="font-display text-display-md font-bold text-ink group-hover:text-accent transition-colors">个人中心</span>
               <span class="block label-caption text-muted mt-1">管理我的名片</span>
             </a>
+            <a href="{{ route('notifications.index') }}" @click="menuOpen = false"
+               class="group block py-4 border-b border-hairline">
+              <span class="font-display text-display-md font-bold text-ink group-hover:text-accent transition-colors">通知</span>
+              <span class="block label-caption text-muted mt-1">审核与推荐动态</span>
+            </a>
             <form method="POST" action="{{ route('logout') }}"
                   onsubmit="return confirm('确认退出当前账户？')"
                   class="group block py-4 border-b border-hairline">

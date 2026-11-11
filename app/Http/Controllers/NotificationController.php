@@ -8,20 +8,15 @@ class NotificationController extends Controller
 {
     public function index(Request $request)
     {
-        return $request->user()->notifications()
+        $notifications = $request->user()->notifications()
             ->orderByDesc('created_at')
             ->limit(20)
-            ->get()
-            ->map(fn ($n) => [
-                'id' => $n->id,
-                'kind' => $n->data['kind'] ?? null,
-                'title' => $n->data['title'] ?? '',
-                'body' => $n->data['body'] ?? '',
-                'url' => $n->data['url'] ?? null,
-                'read_at' => $n->read_at?->toIso8601String(),
-                'created_at' => $n->created_at->diffForHumans(),
-            ])
-            ->values();
+            ->get();
+
+        return view('notifications.index', [
+            'notifications' => $notifications,
+            'unreadCount' => $notifications->filter(fn ($n) => is_null($n->read_at))->count(),
+        ]);
     }
 
     public function unread(Request $request)
