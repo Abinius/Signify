@@ -34,7 +34,7 @@ class HomeRedirectTest extends TestCase
 
         $response = $this->get('/');
 
-        $response->assertRedirect(route('entrepreneurs.show', $entrepreneur->id));
+        $response->assertRedirect($entrepreneur->url);
     }
 
     /**

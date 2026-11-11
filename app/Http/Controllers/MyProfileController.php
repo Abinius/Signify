@@ -66,8 +66,6 @@ class MyProfileController extends Controller
             default => null,
         };
 
-        $slug = $e->share_slug ?? (string) $e->id;
-
         return [
             'has_entrepreneur' => true,
             'status' => $e->status,
@@ -77,7 +75,7 @@ class MyProfileController extends Controller
             'featured_label' => $featuredLabel,
             'can_apply_featured' => $canApplyFeatured,
             'slug' => $e->share_slug,
-            'card_url' => route('entrepreneurs.show', $slug),
+            'card_url' => $e->url,
             'check_slug_url' => route('profile.check-slug'),
             'update_url' => route('profile.update'),
             'featured_url' => route('profile.featured-request'),

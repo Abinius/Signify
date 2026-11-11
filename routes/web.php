@@ -12,19 +12,22 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
 */
 Route::get('/', [EntrepreneurController::class, 'home'])->name('home');
-Route::get('/entrepreneurs', [EntrepreneurController::class, 'index'])->name('entrepreneurs.index');
+Route::get('/entrepreneurs', [EntrepreneurController::class, 'index'])
+    ->name('entrepreneurs.index')
+    ->middleware('throttle:60,1');
 
 /*
-| 短链路由 /u/{slug}：复用 entrepreneurs.show。
-| 放在 /entrepreneurs/{id} 前面，避免 {id} 先吃掉纯数字 slug。
-| named route 指向 /u，route('entrepreneurs.show', $slug) 自动输出短链 URL。
+| 短链路由 /u/{slug}：named route 指向 /u，route('entrepreneurs.show', $slug) 输出短链 URL。
+| 正则排除纯数字（纯数字只走 /entrepreneurs/{id}），消除 /u/9 与 /entrepreneurs/9 双 URL 重复。
+| 调用点统一用 $entrepreneur->url accessor，share_slug 为空时自动 fallback 到 id 路由。
 */
-Route::get('/u/{slug}', [EntrepreneurController::class, 'show'])
+Route::get('/u/{slug}', [EntrepreneurController::class, 'showBySlug'])
     ->name('entrepreneurs.show')
-    ->where('slug', '[a-z0-9]+(?:-[a-z0-9]+)*');
+    ->where('slug', '(?![0-9]+$)[a-z0-9]+(?:-[a-z0-9]+)*')
+    ->middleware('throttle:120,1');
 
 // 旧数字链接保留，不 301（避免微信预览读到目标 URL）
-Route::get('/entrepreneurs/{id}', [EntrepreneurController::class, 'show'])
+Route::get('/entrepreneurs/{id}', [EntrepreneurController::class, 'showById'])
     ->whereNumber('id');
 
 /*

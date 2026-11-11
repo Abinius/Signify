@@ -75,7 +75,7 @@
                       {{ mb_substr($entrepreneur->name, 0, 1) }}
                     </div>
                   @endif
-                  <a href="{{ route('entrepreneurs.show', $entrepreneur->id) }}" target="_blank" rel="noopener"
+                  <a href="{{ $entrepreneur->url }}" target="_blank" rel="noopener"
                      class="font-display font-bold text-ink hover:text-accent transition-colors">{{ $entrepreneur->name }}</a>
                 </div>
               </td>

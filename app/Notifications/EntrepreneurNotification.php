@@ -27,7 +27,7 @@ class EntrepreneurNotification extends Notification
     public function toDatabase($notifiable): array
     {
         $name = $this->entrepreneur->name;
-        $show = route('entrepreneurs.show', $this->entrepreneur->share_slug ?? $this->entrepreneur->id);
+        $show = $this->entrepreneur->url;
 
         return match ($this->type) {
             self::APPROVED => [
