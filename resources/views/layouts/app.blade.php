@@ -56,40 +56,49 @@
 
   <x-settings.modal />
 
-  {{-- 全屏菜单弹窗 --}}
-  <div x-show="menuOpen" x-cloak
-       @keydown.escape.window="menuOpen = false"
-       class="fixed inset-0 z-[200] bg-paper flex flex-col">
-    <div class="flex items-center justify-between px-6 py-5">
-      <img src="{{ asset('icons/logo.svg') }}" alt="{{ \App\Models\Setting::get('site_name', 'SIGNIFY') }}" class="h-6 w-auto">
-      <button type="button" @click="menuOpen = false" aria-label="关闭菜单"
-              class="w-11 h-11 flex items-center justify-center text-ink hover:opacity-60 transition-opacity">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" class="w-6 h-6">
-          <line x1="18" y1="6" x2="6" y2="18"></line>
-          <line x1="6" y1="6" x2="18" y2="18"></line>
-        </svg>
-      </button>
-    </div>
-    <nav class="flex-1 overflow-y-auto">
-      <div class="max-w-5xl mx-auto w-full px-6 py-10">
-        <div class="space-y-2">
-          <x-menu-link href="{{ route('home') }}" icon="home" label="首页" />
-          <x-menu-link href="{{ route('entrepreneurs.index') }}" icon="book" label="智库" />
-
-          @auth
-            <x-menu-link href="{{ route('profile.show') }}" icon="user" label="个人中心" />
-            <x-menu-link icon="bell" label="通知" unread="1" tab="notif" />
-            <x-menu-link icon="settings" label="设置" tab="mine" />
-            <x-menu-link href="{{ route('logout') }}" icon="log-out" label="退出账户"
-                         danger="1" submit="1" confirm="确认退出当前账户？" />
-          @else
-            <x-menu-link href="{{ route('login') }}" icon="log-in" label="登录" />
-            <x-menu-link href="{{ route('register') }}" icon="user-plus" label="加入" />
-          @endauth
-        </div>
+  {{-- 右侧边栏菜单：按使用场景分组，组间距(space-y-8)明显大于行间距(space-y-2)；底部常驻 --}}
+  <x-menu-sidebar :showFooter="auth()->check()">
+    <x-menu-group title="浏览">
+      <x-menu-link href="{{ route('home') }}" icon="home" label="首页"
+                   :active="request()->routeIs('home')" />
+      <x-menu-link href="{{ route('entrepreneurs.index') }}" icon="book" label="智库"
+                   :active="request()->routeIs('entrepreneurs.index', 'entrepreneurs.show')" />
+    </x-menu-group>
+    <x-menu-group title="账户">
+      @auth
+        <x-menu-link href="{{ route('profile.show') }}" icon="user" label="个人中心"
+                     :active="request()->routeIs('profile.show')" />
+      @else
+        <x-menu-link href="{{ route('login') }}" icon="log-in" label="登录"
+                     :active="request()->routeIs('login')" />
+        <x-menu-link href="{{ route('register') }}" icon="user-plus" label="加入"
+                     :active="request()->routeIs('register')" />
+      @endauth
+    </x-menu-group>
+    @auth
+      @if(auth()->user()->is_admin)
+      {{-- 后台管理：管理员专用独立编组，普通用户不显示 --}}
+      <x-menu-group title="后台管理">
+        <x-menu-link href="{{ route('admin.dashboard') }}" icon="clock" label="待审核"
+                     :active="request()->routeIs('admin.dashboard')" />
+        <x-menu-link href="{{ route('admin.entrepreneurs') }}" icon="users" label="全部企业家"
+                     :active="request()->routeIs('admin.entrepreneurs')" />
+        <x-menu-link href="{{ route('admin.settings') }}" icon="sliders" label="系统设置"
+                     :active="request()->routeIs('admin.settings')" />
+      </x-menu-group>
+      @endif
+    @endauth
+    <x-slot:footer>
+      <div class="grid grid-cols-3 gap-2">
+        <x-menu-link compact href="{{ route('my.settings') }}" icon="settings" label="设置"
+                     :active="request()->routeIs('my.settings')" />
+        <x-menu-link compact href="{{ route('notifications.index') }}" icon="bell" label="通知" unread="1"
+                     :active="request()->routeIs('notifications.index')" />
+        <x-menu-link compact href="{{ route('logout') }}" icon="log-out" label="退出"
+                     danger="1" submit="1" confirm="确认退出当前账户？" />
       </div>
-    </nav>
-  </div>
+    </x-slot:footer>
+  </x-menu-sidebar>
 
   <main class="flex-1">
     @include('components.flash')

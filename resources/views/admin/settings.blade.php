@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+@extends('layouts.app')
 
 @push('styles')
   <link rel="stylesheet" href="{{ asset('css/cropper.min.css') }}">

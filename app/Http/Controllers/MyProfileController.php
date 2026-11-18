@@ -29,6 +29,14 @@ class MyProfileController extends Controller
     }
 
     /**
+     * 设置 - 独立页面（账户资料 / 认证 / 推荐 / 专属链接 / 修改密码）
+     */
+    public function settings()
+    {
+        return view('settings.index');
+    }
+
+    /**
      * 设置抽屉用的档案概览（JSON）
      */
     public function summary(Request $request): array

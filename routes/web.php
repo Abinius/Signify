@@ -44,6 +44,9 @@ Route::middleware(['auth'])->group(function () {
     // 短链可用性实时校验（AJAX 端点）
     Route::get('/my/profile/check-slug', [MyProfileController::class, 'checkSlug'])->name('profile.check-slug');
 
+    // 设置（独立页）
+    Route::get('/my/settings', [MyProfileController::class, 'settings'])->name('my.settings');
+
     // 设置抽屉用的档案概览（AJAX）
     Route::get('/my/summary', [MyProfileController::class, 'summary'])->name('profile.summary');
 
