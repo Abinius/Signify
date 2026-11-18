@@ -30,6 +30,25 @@ class PasswordUpdateTest extends TestCase
     }
 
     /**
+     * AJAX 请求成功 → 返回 JSON，供设置抽屉使用
+     */
+    public function test_ajax_update_returns_json(): void
+    {
+        $user = User::factory()->create(['password' => Hash::make('old-password')]);
+
+        $this->actingAs($user)
+            ->putJson('/password', [
+                'current_password' => 'old-password',
+                'password' => 'new-password',
+                'password_confirmation' => 'new-password',
+            ])
+            ->assertOk()
+            ->assertJson(['ok' => true]);
+
+        $this->assertTrue(Hash::check('new-password', $user->fresh()->password));
+    }
+
+    /**
      * 错误当前密码 → 被拒，密码不变
      */
     public function test_wrong_current_password_is_rejected(): void

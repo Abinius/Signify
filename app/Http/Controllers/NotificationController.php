@@ -10,24 +10,36 @@ class NotificationController extends Controller
     {
         $notifications = $request->user()->notifications()
             ->orderByDesc('created_at')
-            ->limit(20)
-            ->get();
+            ->paginate(15);
 
         return view('notifications.index', [
             'notifications' => $notifications,
-            'unreadCount' => $notifications->filter(fn ($n) => is_null($n->read_at))->count(),
+            'unreadCount' => $request->user()->unreadNotifications()->count(),
         ]);
     }
 
     public function unread(Request $request)
     {
-        return $request->user()->unreadNotifications->map(fn ($n) => [
+        return $this->payload($request->user()->unreadNotifications);
+    }
+
+    public function recent(Request $request)
+    {
+        return $this->payload(
+            $request->user()->notifications()->orderByDesc('created_at')->limit(20)->get()
+        );
+    }
+
+    private function payload($notifications)
+    {
+        return $notifications->map(fn ($n) => [
             'id' => $n->id,
             'kind' => $n->data['kind'] ?? null,
             'title' => $n->data['title'] ?? '',
             'body' => $n->data['body'] ?? '',
             'url' => $n->data['url'] ?? null,
             'created_at' => $n->created_at->diffForHumans(),
+            'read' => ! is_null($n->read_at),
         ])->values();
     }
 

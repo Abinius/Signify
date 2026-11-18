@@ -151,4 +151,60 @@ class NotificationTest extends TestCase
             $user->fresh()->notifications->first()->data['kind']
         );
     }
+
+    /**
+     * recent 接口返回已读+未读，且每条带 read 字段
+     */
+    public function test_recent_returns_read_and_unread_with_read_flag(): void
+    {
+        $user = User::factory()->create();
+        $entrepreneur = Entrepreneur::factory()->create(['user_id' => $user->id]);
+
+        $user->notify(new EntrepreneurNotification(EntrepreneurNotification::APPROVED, $entrepreneur));
+        $user->notify(new EntrepreneurNotification(EntrepreneurNotification::REJECTED, $entrepreneur));
+        $user->fresh()->notifications()->first()->markAsRead();
+
+        $this->actingAs($user)
+            ->get('/notifications/recent')
+            ->assertOk()
+            ->assertJsonCount(2)
+            ->assertJsonPath('0.read', true)
+            ->assertJsonPath('1.read', false);
+    }
+
+    /**
+     * unread 接口契约不变：只返回未读
+     */
+    public function test_unread_excludes_read(): void
+    {
+        $user = User::factory()->create();
+        $entrepreneur = Entrepreneur::factory()->create(['user_id' => $user->id]);
+
+        $user->notify(new EntrepreneurNotification(EntrepreneurNotification::APPROVED, $entrepreneur));
+        $user->notify(new EntrepreneurNotification(EntrepreneurNotification::REJECTED, $entrepreneur));
+        $user->fresh()->notifications()->first()->markAsRead();
+
+        $this->actingAs($user)
+            ->get('/notifications/unread')
+            ->assertOk()
+            ->assertJsonCount(1);
+    }
+
+    /**
+     * 通知列表页分页：16 条时第一页 15 条，存在下一页
+     */
+    public function test_index_paginates_at_15(): void
+    {
+        $user = User::factory()->create();
+        $entrepreneur = Entrepreneur::factory()->create(['user_id' => $user->id]);
+
+        for ($i = 0; $i < 16; $i++) {
+            $user->notify(new EntrepreneurNotification(EntrepreneurNotification::APPROVED, $entrepreneur));
+        }
+
+        $response = $this->actingAs($user)->get('/notifications');
+
+        $response->assertOk()->assertSee('page=2');
+        $this->assertCount(15, $user->fresh()->notifications()->orderByDesc('created_at')->paginate(15)->items());
+    }
 }

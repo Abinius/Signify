@@ -318,8 +318,10 @@ class SocialLinkTest extends TestCase
         $response = $this->get('/entrepreneurs/'.$entrepreneur->id);
 
         $response->assertStatus(200);
+        // 仿冒域名不映射品牌 logo，回退默认图标。
+        // 注：菜单头部现合法渲染 icons/logo.svg，故不能用页面级 assertDontSee；以「链接已渲染 + 默认图标」验证。
+        $response->assertSee('61lm.com.cn');
         $response->assertSee('icons/google.svg');
-        $response->assertDontSee('icons/logo.svg');
     }
 
     /**

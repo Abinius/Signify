@@ -45,16 +45,23 @@
       <line x1="3" y1="12" x2="21" y2="12"></line>
       <line x1="3" y1="17" x2="21" y2="17"></line>
     </svg>
+    <span x-show="$store.ui.unread > 0" x-cloak
+          :class="{ 'animate-pulse': $store.ui.pulse }"
+          class="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 rounded-full
+                 bg-status-danger text-paper text-[10px] leading-[18px] text-center font-bold
+                 flex items-center justify-center">
+      <span x-text="$store.ui.unread > 99 ? '99+' : $store.ui.unread"></span>
+    </span>
   </button>
 
-  <x-settings.drawer />
+  <x-settings.modal />
 
   {{-- 全屏菜单弹窗 --}}
   <div x-show="menuOpen" x-cloak
        @keydown.escape.window="menuOpen = false"
        class="fixed inset-0 z-[200] bg-paper flex flex-col">
-    <div class="flex items-center justify-between px-6 py-5 border-b border-hairline">
-      <span class="label-caption text-muted">{{ \App\Models\Setting::get('site_name', 'SIGNIFY') }}</span>
+    <div class="flex items-center justify-between px-6 py-5">
+      <img src="{{ asset('icons/logo.svg') }}" alt="{{ \App\Models\Setting::get('site_name', 'SIGNIFY') }}" class="h-6 w-auto">
       <button type="button" @click="menuOpen = false" aria-label="关闭菜单"
               class="w-11 h-11 flex items-center justify-center text-ink hover:opacity-60 transition-opacity">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" class="w-6 h-6">
@@ -66,48 +73,18 @@
     <nav class="flex-1 overflow-y-auto">
       <div class="max-w-5xl mx-auto w-full px-6 py-10">
         <div class="space-y-2">
-          <a href="{{ route('entrepreneurs.index') }}" @click="menuOpen = false"
-             class="group block py-4 border-b border-hairline">
-            <span class="font-display text-display-md font-bold text-ink group-hover:text-accent transition-colors">智库</span>
-            <span class="block label-caption text-muted mt-1">浏览推荐企业家</span>
-          </a>
+          <x-menu-link href="{{ route('home') }}" icon="home" label="首页" />
+          <x-menu-link href="{{ route('entrepreneurs.index') }}" icon="book" label="智库" />
 
           @auth
-            @if(auth()->user()->is_admin)
-              <a href="{{ route('admin.dashboard') }}" @click="menuOpen = false"
-                 class="group block py-4 border-b border-hairline">
-                <span class="font-display text-display-md font-bold text-ink group-hover:text-accent transition-colors">后台</span>
-                <span class="block label-caption text-muted mt-1">管理认证与推荐</span>
-              </a>
-            @endif
-            <a href="{{ route('profile.show') }}" @click="menuOpen = false"
-               class="group block py-4 border-b border-hairline">
-              <span class="font-display text-display-md font-bold text-ink group-hover:text-accent transition-colors">个人中心</span>
-              <span class="block label-caption text-muted mt-1">管理我的名片</span>
-            </a>
-            <a href="{{ route('notifications.index') }}" @click="menuOpen = false"
-               class="group block py-4 border-b border-hairline">
-              <span class="font-display text-display-md font-bold text-ink group-hover:text-accent transition-colors">通知</span>
-              <span class="block label-caption text-muted mt-1">审核与推荐动态</span>
-            </a>
-            <form method="POST" action="{{ route('logout') }}"
-                  onsubmit="return confirm('确认退出当前账户？')"
-                  class="group block py-4 border-b border-hairline">
-              @csrf
-              <button type="submit"
-                      class="font-display text-display-md font-bold text-status-danger text-left w-full">退出账户</button>
-            </form>
+            <x-menu-link href="{{ route('profile.show') }}" icon="user" label="个人中心" />
+            <x-menu-link icon="bell" label="通知" unread="1" tab="notif" />
+            <x-menu-link icon="settings" label="设置" tab="mine" />
+            <x-menu-link href="{{ route('logout') }}" icon="log-out" label="退出账户"
+                         danger="1" submit="1" confirm="确认退出当前账户？" />
           @else
-            <a href="{{ route('login') }}" @click="menuOpen = false"
-               class="group block py-4 border-b border-hairline">
-              <span class="font-display text-display-md font-bold text-ink group-hover:text-accent transition-colors">登录</span>
-              <span class="block label-caption text-muted mt-1">已有账号，直接登录</span>
-            </a>
-            <a href="{{ route('register') }}" @click="menuOpen = false"
-               class="group block py-4 border-b border-hairline">
-              <span class="font-display text-display-md font-bold text-ink group-hover:text-accent transition-colors">加入</span>
-              <span class="block label-caption text-muted mt-1">创建账号，开始使用</span>
-            </a>
+            <x-menu-link href="{{ route('login') }}" icon="log-in" label="登录" />
+            <x-menu-link href="{{ route('register') }}" icon="user-plus" label="加入" />
           @endauth
         </div>
       </div>

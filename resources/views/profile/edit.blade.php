@@ -18,14 +18,16 @@
     <div class="border border-hairline bg-surface p-10">
       <h2 class="font-display text-display-md font-bold text-ink mb-2">创建企业家档案</h2>
       <p class="text-sm text-muted mb-8">创建后自动通过，获「推荐」后进入智库。</p>
-      <form method="POST" action="{{ route('profile.create') }}" class="max-w-md space-y-6">
+      <form method="POST" action="{{ route('profile.create') }}" class="max-w-md mx-auto space-y-6">
         @csrf
         <div>
           <label class="label-caption text-muted">姓名</label>
           <input type="text" name="name" value="{{ old('name') }}" required autofocus class="input-line">
           @error('name') <p class="field-error">{{ $message }}</p> @enderror
         </div>
-        <button type="submit" class="btn-ink">创建档案</button>
+        <div class="text-center">
+          <button type="submit" class="btn-ink">创建档案</button>
+        </div>
       </form>
     </div>
   @else
@@ -38,8 +40,8 @@
       @csrf
       @method('PATCH')
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div>
+      <div class="flex flex-col items-center gap-6">
+        <div class="flex flex-col items-center">
           <label class="label-caption text-muted">形象照</label>
           <div class="mt-3">
             <button type="button" @click="$refs.avatarInput.click()"
@@ -62,7 +64,7 @@
           @error('avatar') <p class="field-error">{{ $message }}</p> @enderror
         </div>
 
-        <div>
+        <div class="w-full">
           <label class="label-caption text-muted">姓名</label>
           <input type="text" name="name" value="{{ old('name', $entrepreneur->name) }}" class="input-line">
           @error('name') <p class="field-error">{{ $message }}</p> @enderror
@@ -180,19 +182,21 @@
             </div>
           </template>
         </div>
-        <button type="button" @click="addSocial()" x-show="socialLinks.length < 5"
-                class="mt-3 inline-flex items-center gap-2 label-caption text-accent hover:opacity-70 transition-opacity">
-          <span class="w-4 h-4 border border-current grid place-items-center leading-none">＋</span>
-          添加社交主页
-        </button>
+        <div class="text-center mt-3">
+          <button type="button" @click="addSocial()" x-show="socialLinks.length < 5"
+                  class="inline-flex items-center gap-2 label-caption text-accent hover:opacity-70 transition-opacity">
+            <span class="w-4 h-4 border border-current grid place-items-center leading-none">＋</span>
+            添加社交主页
+          </button>
+        </div>
         <p class="mt-1.5 text-xs text-muted" x-show="socialLinks.length >= 5">最多添加 5 个社交主页</p>
         @error('social_links') <p class="field-error">{{ $message }}</p> @enderror
         @error('social_links.*') <p class="field-error">{{ $message }}</p> @enderror
       </div>
 
-      <div>
+      <div class="flex flex-col items-center">
         <label class="label-caption text-muted">微信二维码</label>
-        <div class="mt-3 flex items-center gap-6">
+        <div class="mt-3 flex items-center justify-center gap-6">
           <button type="button" @click="$refs.qrInput.click()"
                   class="w-24 h-24 border border-hairline overflow-hidden relative grid place-items-center
                          {{ $entrepreneur->wechat_qrcode ? '' : 'bg-ink/5' }} hover:opacity-80 transition-opacity"
@@ -216,31 +220,6 @@
       </div>
     </form>
   @endif
-
-  {{-- 修改密码：登录用户均可，与有无企业家档案无关 --}}
-  <div class="mt-10 border border-hairline bg-surface p-10">
-    <h2 class="font-display text-display-md font-bold text-ink mb-2">修改密码</h2>
-    <p class="text-sm text-muted mb-8">需先验证当前密码。</p>
-    <form method="POST" action="{{ route('password.update') }}" class="max-w-md space-y-6">
-      @csrf
-      @method('PUT')
-      <div>
-        <label class="label-caption text-muted">当前密码</label>
-        <input type="password" name="current_password" required autocomplete="current-password" class="input-line">
-        @error('current_password') <p class="field-error">{{ $message }}</p> @enderror
-      </div>
-      <div>
-        <label class="label-caption text-muted">新密码</label>
-        <input type="password" name="password" required autocomplete="new-password" class="input-line">
-        @error('password') <p class="field-error">{{ $message }}</p> @enderror
-      </div>
-      <div>
-        <label class="label-caption text-muted">确认新密码</label>
-        <input type="password" name="password_confirmation" required autocomplete="new-password" class="input-line">
-      </div>
-      <button type="submit" class="btn-ink">更新密码</button>
-    </form>
-  </div>
 </div>
 <script>
   // 社交图标映射：与 PHP 端共用 config/social-icons.php（单一来源，避免两端漂移）
