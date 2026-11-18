@@ -6,6 +6,7 @@
   <meta name="csrf-token" content="{{ csrf_token() }}">
   <title>@yield('title', \App\Models\Setting::get('site_name', 'SIGNIFY'))</title>
   <meta name="description" content="{{ \App\Models\Setting::get('site_description', '不用复杂定义，只用数字化技术，把企业家的个人价值放大成看得见的核心竞争力。') }}">
+  <link rel="canonical" href="{{ request()->url() }}">
   <meta name="theme-color" content="#FAFAF7">
 
   {{-- 浏览器图标 --}}
@@ -23,6 +24,17 @@
   <meta name="twitter:title" content="@yield('og-title', \App\Models\Setting::get('share_title', 'SIGNIFY — 每一份引领行业的商业远见，都值得被更广泛地看见'))">
   <meta name="twitter:description" content="@yield('og-description', \App\Models\Setting::get('share_description', '不用复杂定义，只用数字化技术，把企业家的个人价值放大成看得见的核心竞争力。'))">
   <meta name="twitter:image" content="@yield('og-image', \App\Models\Setting::get('share_image', asset('android-chrome-512x512.png')))">
+
+  {{-- 结构化数据：WebSite + Organization（SEO / GEO） --}}
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      { "@type": "WebSite", "name": @json(\App\Models\Setting::get('site_name', 'SIGNIFY')), "url": @json(url('/')), "description": @json(\App\Models\Setting::get('site_description', '')), "inLanguage": "zh-CN" },
+      { "@type": "Organization", "name": @json(\App\Models\Setting::get('site_name', 'SIGNIFY')), "url": @json(url('/')), "logo": @json(asset('android-chrome-512x512.png')) }
+    ]
+  }
+  </script>
 
   <link rel="stylesheet" href="{{ asset('css/app.css') }}">
   @stack('styles')

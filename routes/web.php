@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\EntrepreneurController;
+use App\Http\Controllers\SeoController;
 use App\Http\Controllers\MyProfileController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\NotificationController;
@@ -15,6 +16,13 @@ Route::get('/', [EntrepreneurController::class, 'home'])->name('home');
 Route::get('/entrepreneurs', [EntrepreneurController::class, 'index'])
     ->name('entrepreneurs.index')
     ->middleware('throttle:60,1');
+
+/*
+| SEO / GEO 公开端点（robots、sitemap、llms；爬虫无需登录）
+*/
+Route::get('/robots.txt', [SeoController::class, 'robots'])->name('seo.robots');
+Route::get('/sitemap.xml', [SeoController::class, 'sitemap'])->name('seo.sitemap');
+Route::get('/llms.txt', [SeoController::class, 'llms'])->name('seo.llms');
 
 /*
 | 短链路由 /u/{slug}：named route 指向 /u，route('entrepreneurs.show', $slug) 输出短链 URL。

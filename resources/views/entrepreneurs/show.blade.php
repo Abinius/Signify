@@ -100,4 +100,20 @@
   </article>
 </div>
 
+@push('scripts')
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": @json($entrepreneur->name),
+  "url": @json(url($entrepreneur->url)),
+  "jobTitle": @json($entrepreneur->title),
+  "description": @json($entrepreneur->bio),
+  "image": @json($entrepreneur->avatar ? asset('storage/'.$entrepreneur->avatar) : null),
+  "address": @json($entrepreneur->city ? ['@type' => 'PostalAddress', 'addressLocality' => $entrepreneur->city] : null),
+  "sameAs": @json($entrepreneur->social_links ?? [])
+}
+</script>
+@endpush
+
 @endsection

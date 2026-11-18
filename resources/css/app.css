@@ -34,17 +34,35 @@
 }
 
 @layer components {
+  /* 便当格：两列网格 + 适当间距（小屏单列） */
+  .bento {
+    @apply grid gap-5 md:grid-cols-2;
+  }
+  /* 便当格卡片：24px 圆角 + 表面底 + 描边 + 内边距 */
+  .bento-card {
+    @apply rounded-3xl border border-hairline bg-surface p-5;
+  }
   .btn-ink {
-    @apply inline-block bg-ink text-paper px-6 py-3 text-sm tracking-wide hover:bg-ink-soft transition-colors duration-200;
+    @apply inline-block bg-ink text-paper px-6 py-3 text-sm tracking-wide rounded-lg hover:bg-ink-soft transition-colors duration-200;
   }
   .btn-outline {
-    @apply inline-block border border-hairline-strong text-ink px-6 py-3 text-sm tracking-wide hover:bg-ink hover:text-paper transition-colors duration-200;
+    @apply inline-block border border-hairline-strong text-ink px-6 py-3 text-sm tracking-wide rounded-lg hover:bg-ink hover:text-paper transition-colors duration-200;
+  }
+  .btn-danger {
+    @apply inline-block border border-status-danger text-status-danger px-6 py-3 text-sm tracking-wide rounded-lg hover:bg-status-danger hover:text-paper transition-colors duration-200;
+  }
+  .btn-success {
+    @apply inline-block border border-status-success text-status-success px-6 py-3 text-sm tracking-wide rounded-lg hover:bg-status-success hover:text-paper transition-colors duration-200;
   }
   .label-caption {
     @apply text-xs uppercase tracking-[0.08em];
   }
   .input-line {
     @apply w-full bg-transparent border-b border-hairline py-2.5 text-base focus:outline-none focus:border-ink transition-colors duration-200;
+  }
+  /* 搜索/筛选框：方形圆角带边框，与按钮圆角一致，智库页与后台共用 */
+  .search-input {
+    @apply w-full bg-surface border border-hairline rounded-lg px-4 py-2.5 text-base focus:outline-none focus:border-ink transition-colors duration-200;
   }
   .field-error {
     @apply text-accent text-xs mt-1;

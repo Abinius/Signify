@@ -11,15 +11,14 @@
 
 @section('content')
 <div class="max-w-4xl mx-auto px-6 py-12">
-  <p class="label-caption text-accent mb-4 text-center">ADMIN · SETTINGS</p>
-  <h1 class="font-display text-display-lg font-black text-ink mb-10 text-center">系统设置</h1>
+  <h1 class="font-display text-display-lg font-black text-ink mb-10 text-center">SETTINGS</h1>
 
   <form method="POST" action="{{ route('admin.settings.update') }}" enctype="multipart/form-data"
-        class="space-y-8" x-data="settingsCrop()">
+        class="bento" x-data="settingsCrop()">
     @csrf
 
     {{-- 基础信息 --}}
-    <div class="border border-hairline bg-surface p-10 space-y-6">
+    <div class="bento-card md:col-span-2 space-y-6">
       <p class="label-caption text-muted">基础信息</p>
       <div>
         <label class="label-caption text-muted">站点名称</label>
@@ -42,7 +41,7 @@
     </div>
 
     {{-- 分享卡片 --}}
-    <div class="border border-hairline bg-surface p-10 space-y-6">
+    <div class="bento-card md:col-span-2 space-y-6">
       <div>
         <p class="label-caption text-muted">微信 / 社交媒体分享卡片</p>
         <p class="text-xs text-muted mt-2">用于微信等平台分享时的默认标题、描述与图片（企业家名片页优先使用其自身头像与简介）。</p>
@@ -97,7 +96,7 @@
     </div>
 
     {{-- Footer --}}
-    <div class="border border-hairline bg-surface p-10 space-y-6">
+    <div class="bento-card md:col-span-2 space-y-6">
       <p class="label-caption text-muted">Footer</p>
       <div>
         <label class="label-caption text-muted">版权信息</label>
@@ -113,7 +112,9 @@
       </div>
     </div>
 
-    <button type="submit" class="btn-ink">保存设置</button>
+    <div class="md:col-span-2 text-center">
+      <button type="submit" class="btn-ink">保存设置</button>
+    </div>
   </form>
 </div>
 <script>

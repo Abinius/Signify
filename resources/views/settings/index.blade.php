@@ -10,38 +10,37 @@
        passwordUrl: @json(route('password.update')),
        csrf: @json(csrf_token()),
      })' x-init="boot()">
-  <x-icon name="sliders" class="block w-5 h-5 text-accent mb-4" />
-  <div class="flex items-center justify-between mb-10">
-    <h1 class="font-display text-display-lg font-black text-ink">设置</h1>
+  <div class="text-center mb-10">
+    <h1 class="font-display text-display-lg font-black text-ink">SETTINGS</h1>
   </div>
 
-  <div class="space-y-3">
+  <div class="bento">
     <template x-if="loading">
-      <div class="px-4 py-6 space-y-2">
+      <div class="bento-card md:col-span-2 space-y-2">
         <div class="h-4 w-2/3 bg-surface"></div>
         <div class="h-8 w-full bg-surface"></div>
       </div>
     </template>
 
     <template x-if="!loading && !s.has_entrepreneur">
-      <div class="px-4 py-6 text-center">
+      <div class="bento-card md:col-span-2 text-center py-10">
         <p class="text-sm text-muted mb-3">尚未创建企业家档案</p>
         <a href="@json(route('profile.show'))" class="label-caption text-accent hover:opacity-70 transition-opacity">前往创建 →</a>
       </div>
     </template>
 
     <template x-if="!loading && s.has_entrepreneur">
-      <div class="space-y-3">
-        {{-- 认证 --}}
-        <div class="border border-hairline p-3">
-          <p class="label-caption text-muted mb-1.5">认证</p>
-          <span class="inline-flex items-center gap-1.5 label-caption"
+      <div class="contents">
+        {{-- 认证：重要信息，横跨两列、占两格 --}}
+        <div class="bento-card md:col-span-2 md:row-span-2 flex flex-col items-center justify-center text-center gap-2">
+          <p class="label-caption text-muted">认证</p>
+          <span class="font-display text-display-md font-bold"
                 :class="statusColor(s.status)"
                 x-text="s.status_label"></span>
         </div>
 
-        {{-- 推荐 --}}
-        <div class="border border-hairline p-3">
+        {{-- 推荐：横跨两列（申请理由输入较宽） --}}
+        <div class="bento-card md:col-span-2">
           <p class="label-caption text-muted mb-1.5">推荐</p>
           <template x-if="s.featured_label">
             <span class="inline-flex items-center gap-1.5 label-caption"
@@ -56,7 +55,7 @@
                 <textarea x-model="reason" rows="3" placeholder="请简要说明申请理由"
                           class="input-line resize-none text-sm w-full"></textarea>
                 <p x-show="featuredError" x-cloak class="field-error" x-text="featuredError"></p>
-                <div class="flex items-center gap-3 justify-end">
+                <div class="flex items-center gap-3 justify-center">
                   <button type="button" @click="applying = false; reason = ''; featuredError = ''"
                           class="label-caption text-muted hover:text-ink">取消</button>
                   <button type="button" @click="applyFeatured()"
@@ -68,7 +67,7 @@
         </div>
 
         {{-- 专属链接 --}}
-        <div class="border border-hairline p-3">
+        <div class="bento-card">
           <p class="label-caption text-muted mb-1.5">专属链接</p>
           <div class="flex items-stretch border border-hairline">
             <span class="px-2 flex items-center text-xs text-muted bg-surface border-r border-hairline">/u/</span>
@@ -86,7 +85,7 @@
         </div>
 
         {{-- 名片 --}}
-        <div class="border border-hairline p-3 text-center">
+        <div class="bento-card text-center">
           <a :href="s.card_url"
              class="inline-flex items-center gap-1.5 label-caption text-accent hover:opacity-70 transition-opacity">
             查看我的名片 →
@@ -103,8 +102,8 @@
       </div>
     </template>
 
-    {{-- 修改密码（所有登录用户均可） --}}
-    <div class="border border-hairline p-3">
+    {{-- 修改密码（所有登录用户均可）：横跨两列 --}}
+    <div class="bento-card md:col-span-2">
       <button type="button" @click="pwOpen = !pwOpen" :aria-expanded="pwOpen" aria-controls="pw-panel"
               class="w-full flex items-center justify-between">
         <span class="label-caption text-muted">修改密码</span>

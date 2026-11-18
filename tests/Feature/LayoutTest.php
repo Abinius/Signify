@@ -28,20 +28,6 @@ class LayoutTest extends TestCase
     }
 
     /**
-     * 管理员在前台：设置弹窗 tab 栏有后台入口
-     */
-    public function test_admin_sees_backend_shortcut_in_settings(): void
-    {
-        $admin = User::factory()->create(['is_admin' => true]);
-        Entrepreneur::factory()->create(['user_id' => $admin->id]);
-
-        $this->actingAs($admin)
-            ->get('/my/profile')
-            ->assertOk()
-            ->assertSee('后台 →');
-    }
-
-    /**
      * 普通用户：设置弹窗无后台入口
      */
     public function test_regular_user_no_backend_shortcut(): void
@@ -77,7 +63,7 @@ class LayoutTest extends TestCase
         $user = User::factory()->create();
 
         $this->actingAs($user)
-            ->get('/my/profile')
+            ->get('/my/settings')
             ->assertOk()
             ->assertSee('修改密码')
             ->assertSee('pw-panel');

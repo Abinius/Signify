@@ -4,8 +4,7 @@
 
 @section('content')
 <div class="max-w-md mx-auto px-6 py-20">
-  <p class="label-caption text-accent mb-4 text-center">FORGOT PASSWORD</p>
-  <h1 class="font-display text-display-lg font-black text-ink mb-6 text-center">忘记密码</h1>
+  <h1 class="font-display text-display-lg font-black text-ink mb-6 text-center">FORGOT PASSWORD</h1>
   <p class="text-sm text-ink-soft leading-relaxed mb-10">输入注册邮箱，我们将发送重置链接。</p>
 
   @if(session('status'))

@@ -6,19 +6,21 @@
 <div class="max-w-7xl mx-auto px-6 py-12"
      x-data="{ ids: [], get allIds() { return @js($entrepreneurs->pluck('id')->all()) } }">
 
-  <p class="label-caption text-accent mb-4 text-center">ADMIN · ENTREPRENEURS</p>
-  <h1 class="font-display text-display-lg font-black text-ink mb-10 text-center">全部企业家</h1>
+  <h1 class="font-display text-display-lg font-black text-ink mb-10 text-center">ENTREPRENEURS</h1>
 
   <form method="GET" action="{{ route('admin.entrepreneurs') }}"
-        class="border-b border-hairline pb-6 mb-8 flex flex-col md:flex-row gap-5 md:items-end">
-    <div class="flex-1">
-      <label class="label-caption text-muted">搜索</label>
-      <input type="text" name="search" value="{{ $filters['search'] ?? '' }}" placeholder="搜索姓名..." class="input-line">
+        class="mb-8 flex flex-col sm:flex-row gap-3 sm:items-center">
+    <div class="relative flex-1">
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"
+           class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted pointer-events-none">
+        <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+      </svg>
+      <input type="text" name="search" value="{{ $filters['search'] ?? '' }}" placeholder="搜索姓名..."
+             aria-label="搜索" class="search-input pl-10">
     </div>
-    <div class="w-full md:w-44">
-      <label class="label-caption text-muted">状态</label>
-      <select name="status" class="input-line">
-        <option value="">全部</option>
+    <div class="sm:w-40">
+      <select name="status" class="search-input" aria-label="状态">
+        <option value="">全部状态</option>
         @foreach(['pending' => '待审核', 'approved' => '已通过', 'rejected' => '已拒绝'] as $val => $label)
           <option value="{{ $val }}" @selected(($filters['status'] ?? '') === $val)>{{ $label }}</option>
         @endforeach
@@ -102,18 +104,18 @@
                   @if($entrepreneur->status === 'pending')
                     <form method="POST" action="{{ route('admin.approve', $entrepreneur) }}">
                       @csrf
-                      <button class="label-caption text-status-success hover:opacity-70 transition-opacity">通过</button>
+                      <button class="btn-success !py-1.5 !px-4 text-sm">通过</button>
                     </form>
                     <form method="POST" action="{{ route('admin.reject', $entrepreneur) }}">
                       @csrf
-                      <button class="label-caption text-status-danger hover:opacity-70 transition-opacity">拒绝</button>
+                      <button class="btn-danger !py-1.5 !px-4 text-sm">拒绝</button>
                     </form>
                   @endif
                   <form method="POST" action="{{ route('admin.destroy', $entrepreneur) }}"
                         onsubmit="return confirm('确认删除「{{ $entrepreneur->name }}」？此操作不可撤销。')">
                     @csrf
                     @method('DELETE')
-                    <button class="label-caption text-status-danger hover:opacity-70 transition-opacity">删除</button>
+                    <button class="btn-danger !py-1.5 !px-4 text-sm">删除</button>
                   </form>
                 </div>
               </td>

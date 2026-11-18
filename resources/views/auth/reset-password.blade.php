@@ -4,8 +4,7 @@
 
 @section('content')
 <div class="max-w-md mx-auto px-6 py-20">
-  <p class="label-caption text-accent mb-4 text-center">RESET PASSWORD</p>
-  <h1 class="font-display text-display-lg font-black text-ink mb-10 text-center">重置密码</h1>
+  <h1 class="font-display text-display-lg font-black text-ink mb-10 text-center">RESET PASSWORD</h1>
 
   <form method="POST" action="{{ route('password.store') }}" class="space-y-8">
     @csrf
@@ -28,7 +27,7 @@
       <input type="password" name="password_confirmation" required autocomplete="new-password" class="input-line">
     </div>
 
-    <button type="submit" class="btn-ink w-full">重置密码</button>
+    <button type="submit" class="btn-ink w-full">RESET PASSWORD</button>
   </form>
 </div>
 @endsection
