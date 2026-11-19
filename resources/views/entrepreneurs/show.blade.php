@@ -111,6 +111,8 @@
   "description": @json($entrepreneur->bio),
   "image": @json($entrepreneur->avatar ? asset('storage/'.$entrepreneur->avatar) : null),
   "address": @json($entrepreneur->city ? ['@type' => 'PostalAddress', 'addressLocality' => $entrepreneur->city] : null),
+  "telephone": @json($entrepreneur->contact_phone),
+  "email": @json($entrepreneur->contact_email),
   "sameAs": @json($entrepreneur->social_links ?? [])
 }
 </script>

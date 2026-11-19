@@ -49,7 +49,7 @@
     <span class="text-xs text-muted" x-show="ids.length" x-text="'已选 ' + ids.length + ' 项'"></span>
   </div>
 
-  <div class="border border-hairline bg-surface">
+  <div class="border border-white/30 bg-white/60 backdrop-blur-[20px]">
     <div class="overflow-x-auto">
       <table class="w-full text-left">
         <thead>

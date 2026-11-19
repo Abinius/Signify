@@ -47,6 +47,15 @@
 <body class="min-h-screen flex flex-col" x-data="{ menuOpen: false }"
       :class="menuOpen ? 'overflow-hidden' : ''">
 
+  {{-- 背景渐变：大范围径向色晕（红/绿/金），连贯柔化，为毛玻璃卡片提供可透色彩 --}}
+  <div class="pointer-events-none fixed inset-0 -z-10" aria-hidden="true">
+    <div class="absolute inset-0"
+         style="background:
+           radial-gradient(55rem 55rem at 12% -5%, rgba(179,57,44,.12), transparent 60%),
+           radial-gradient(48rem 48rem at 105% 25%, rgba(47,107,79,.12), transparent 60%),
+           radial-gradient(60rem 60rem at 45% 110%, rgba(168,121,30,.12), transparent 60%);"></div>
+  </div>
+
   {{-- 右上角固定悬浮汉堡按钮 --}}
   <button type="button" @click="menuOpen = true" aria-label="打开菜单"
           class="fixed top-5 right-5 z-[200] w-11 h-11 flex items-center justify-center

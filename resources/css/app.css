@@ -38,9 +38,9 @@
   .bento {
     @apply grid gap-5 md:grid-cols-2;
   }
-  /* 便当格卡片：24px 圆角 + 表面底 + 描边 + 内边距 */
+  /* 便当格卡片：毛玻璃 —— 24px 圆角 + 白 60% 半透明 + 白色半透明细边 + 20px 背景模糊 */
   .bento-card {
-    @apply rounded-3xl border border-hairline bg-surface p-5;
+    @apply rounded-3xl border border-white/30 bg-white/60 backdrop-blur-[20px] p-5;
   }
   .btn-ink {
     @apply inline-block bg-ink text-paper px-6 py-3 text-sm tracking-wide rounded-lg hover:bg-ink-soft transition-colors duration-200;
