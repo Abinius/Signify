@@ -16,10 +16,9 @@
     --l-coral-bright:#e8563a; /* 亮珊瑚 —— 深色底上 hover 强调 */
     --l-coral-deep:#b03a26;   /* 深珊瑚 —— 白底小号强调文字（5.94:1） */
     --l-coral-hover:#a8331f;  /* 按钮 hover */
-    --l-paper:#ffffff;
     --l-hairline:rgba(26,26,24,.1);
     font-family:"Noto Sans SC","PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,sans-serif;
-    font-weight:400;color:var(--l-ink);background:var(--l-paper);line-height:1.8;letter-spacing:.02em;
+    font-weight:400;color:var(--l-ink);background:transparent;line-height:1.8;letter-spacing:.02em;
   }
   .landing h1,.landing h2,.landing h3{
     font-family:"Manrope","Noto Sans SC","PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,sans-serif;
@@ -91,13 +90,14 @@
 
   /* 核心能力：发丝线卡片网格，线性 SVG 图标替代渐变序号 */
   .landing .features__grid{
-    display:grid;grid-template-columns:repeat(3,1fr);gap:1px;margin-top:64px;
-    background:var(--l-hairline);border:1px solid var(--l-hairline);
+    display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:64px;
   }
   .landing .feature{
-    background:var(--l-paper);padding:40px 32px;transition:background .2s ease;
+    background:rgba(255,255,255,.6);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+    border:1px solid rgba(255,255,255,.3);border-radius:20px;
+    padding:40px 32px;transition:background .2s ease,box-shadow .2s ease,transform .2s ease;
   }
-  .landing .feature:hover{background:#fbfaf8}
+  .landing .feature:hover{background:rgba(255,255,255,.8);box-shadow:0 10px 30px rgba(26,26,24,.08);transform:translateY(-2px)}
   .landing .feature__icon{width:36px;height:36px;color:var(--l-coral);margin-bottom:24px;display:block}
   .landing .feature__title{font-size:22px;margin-bottom:16px;line-height:1.25}
   .landing .feature__desc{font-size:16px;font-weight:400;color:var(--l-ink-soft);line-height:1.8}
@@ -135,7 +135,7 @@
     .landing .container{padding:0 24px}
     .landing .hero{padding:140px 0 100px}
     .landing section{padding:80px 0}
-    .landing .features__grid{grid-template-columns:1fr}
+    .landing .features__grid{grid-template-columns:repeat(2,1fr)}
     .landing .feature{padding:32px 24px}
     .landing .final{padding:80px 0}
     .landing .hero__trust{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:6px 12px;font-size:12px;letter-spacing:.14em}
