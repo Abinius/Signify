@@ -34,6 +34,7 @@ Laravel 11 + Blade + Alpine.js · 服务端渲染，服务器零构建 / Server-
 | **品牌分享** Sharing | 名片分享图 og 标签，微信 / 社交可预览 og tags for card sharing, previewable in WeChat/social |
 | **社交链接** Social Link | 单个网址输入，按域名自动识别平台黑色图标（品牌域名用官方 logo）Single URL input, domain-based black icon auto-recognition (brand logo for official domains) |
 | **一键安装** Installer | 数据库连接测试 + 自动建库 DB connection test + auto-create database |
+| **SEO / GEO** | canonical、JSON-LD、动态 sitemap.xml、robots.txt、llms.txt;详情页 Person 结构化数据含联系方式(智能体可直接读取) Canonical, JSON-LD, dynamic sitemap, robots, llms.txt; Person schema with contact info (agent-readable) |
 
 ## 技术栈 / Tech Stack
 
@@ -41,7 +42,7 @@ Laravel 11 + Blade + Alpine.js · 服务端渲染，服务器零构建 / Server-
 |---|---|
 | 后端 Backend | Laravel 11（PHP 8.2+） |
 | 前端 Frontend | Blade + Alpine.js（服务端渲染，零构建 / server-rendered, zero build） |
-| 样式 Style | Tailwind CSS（高端编辑 / 杂志风 editorial/magazine） |
+| 样式 Style | Tailwind CSS（编辑/杂志风 + 毛玻璃卡片与径向渐变背景 / editorial-magazine + frosted-glass cards & radial gradient backdrop） |
 | 数据库 Database | MySQL 5.7+（string 替代 enum，兼容 / enum-replaced with string） |
 | 认证 Auth | Laravel Breeze |
 | 服务器 Server | Nginx 1.28+ / Apache 2.4+ |
@@ -214,6 +215,20 @@ Signify/
 ---
 
 ## 更新日志 / Changelog
+
+### v1.1.0（2026-11）
+
+**界面 / UI**
+- 全站卡片毛玻璃化:backdrop-blur 20px + 白 60% 半透明 + 白色细边;背景大范围径向渐变(红/绿/金)供模糊透色 / Frosted-glass cards (blur 20px, 60% white) over radial gradient backdrop
+- bento 便当格布局统一(统计/表单/通知/设置);搜索栏统一为放大镜 + 方形圆角、满宽一行 / Unified bento layout & search bar (magnifier, rounded, single full-width row)
+- 页头统一英文大标题、保存按钮全站居中 / English display headings, centered submit buttons
+
+**SEO / GEO**
+- 新增 canonical、WebSite/Organization JSON-LD、动态 sitemap.xml、robots.txt、llms.txt / Canonical, JSON-LD, dynamic sitemap, robots, llms.txt
+- 详情页 Person JSON-LD 含电话/邮箱/社交(智能体可直接读取,不破坏 UI)/ Person JSON-LD with contact info (agent-readable, UI untouched)
+
+**清理 / Cleanup**
+- 删除未引用的 geolocate.min.js 与对应定位按钮;更新过期 LayoutTest 断言 / Removed dead geolocate script & button; updated stale tests
 
 ### v1.0.1（2025）
 

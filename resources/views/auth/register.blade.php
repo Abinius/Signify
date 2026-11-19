@@ -4,8 +4,7 @@
 
 @section('content')
 <div class="max-w-md mx-auto px-6 py-20">
-  <p class="label-caption text-accent mb-4 text-center">JOIN</p>
-  <h1 class="font-display text-display-lg font-black text-ink mb-10 text-center">注册</h1>
+  <h1 class="font-display text-display-lg font-black text-ink mb-10 text-center">SIGN UP</h1>
 
   <form method="POST" action="{{ route('register') }}" class="space-y-8">
     @csrf
@@ -27,7 +26,7 @@
       <input type="password" name="password_confirmation" required autocomplete="new-password" placeholder="再次输入密码" class="input-line placeholder:text-muted/60">
     </div>
 
-    <button type="submit" class="btn-ink w-full">注册</button>
+    <button type="submit" class="btn-ink w-full">SIGN UP</button>
   </form>
 
   <p class="mt-10 text-sm text-muted text-center">

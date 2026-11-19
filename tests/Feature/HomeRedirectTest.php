@@ -12,13 +12,14 @@ class HomeRedirectTest extends TestCase
     use RefreshDatabase;
 
     /**
-     * 未登录访问首页 → 跳转登录页（登录墙）
+     * 未登录访问首页 → 渲染落地页（不跳登录）
      */
-    public function test_guest_redirected_to_login_from_home(): void
+    public function test_guest_sees_landing_on_home_without_login(): void
     {
         $response = $this->get('/');
 
-        $response->assertRedirect('/login');
+        $response->assertStatus(200);
+        $response->assertSee('每一份引领行业的商业远见都值得被看见');
     }
 
     /**
@@ -33,7 +34,7 @@ class HomeRedirectTest extends TestCase
 
         $response = $this->get('/');
 
-        $response->assertRedirect(route('entrepreneurs.show', $entrepreneur->id));
+        $response->assertRedirect($entrepreneur->url);
     }
 
     /**

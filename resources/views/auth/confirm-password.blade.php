@@ -4,8 +4,7 @@
 
 @section('content')
 <div class="max-w-md mx-auto px-6 py-20">
-  <p class="label-caption text-accent mb-4 text-center">CONFIRM</p>
-  <h1 class="font-display text-display-lg font-black text-ink mb-6 text-center">确认密码</h1>
+  <h1 class="font-display text-display-lg font-black text-ink mb-6 text-center">CONFIRM PASSWORD</h1>
   <p class="text-sm text-ink-soft leading-relaxed mb-10">这是一项安全操作，请输入密码以继续。</p>
 
   <form method="POST" action="{{ route('password.confirm') }}" class="space-y-8">

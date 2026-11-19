@@ -124,6 +124,17 @@ class Entrepreneur extends Model
     }
 
     /**
+     * 档案公开 URL：有 share_slug 走短链 /u/{slug}，否则走 /entrepreneurs/{id}。
+     * 统一所有调用点，避免 share_slug 为空时把纯数字 id 喂给短链命名路由。
+     */
+    public function getUrlAttribute(): string
+    {
+        return $this->share_slug
+            ? route('entrepreneurs.show', $this->share_slug)
+            : url('/entrepreneurs/' . $this->id);
+    }
+
+    /**
      * 社交平台网址 → 黑色图标文件名（按域名识别；未知域名回退 default）。
      * 映射数据源：config/social-icons.php（前端个人中心预览共用同一份）。
      */

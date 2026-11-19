@@ -227,17 +227,17 @@ class ShareSlugTest extends TestCase
     }
 
     /**
-     * og-url 无 slug 时回退数字 id
+     * og-url 无 slug 时回退数字 id（走 /entrepreneurs/{id}，不走短链）
      */
     public function test_og_url_falls_back_to_id_without_slug(): void
     {
         $entrepreneur = Entrepreneur::factory()->create();
 
         $this->get('/entrepreneurs/'.$entrepreneur->id)
-            ->assertSee('property="og:url" content="' . route('entrepreneurs.show', $entrepreneur->id) . '"', false);
+            ->assertSee('property="og:url" content="' . $entrepreneur->url . '"', false);
 
-        // og:url 指向 /u/{id}，必须真正可访问（修复前此处 404）
-        $this->get(route('entrepreneurs.show', $entrepreneur->id))->assertStatus(200);
+        // 无 slug 时 og:url 与入口一致指向 /entrepreneurs/{id}
+        $this->get($entrepreneur->url)->assertStatus(200);
     }
 
     /**
@@ -257,7 +257,7 @@ class ShareSlugTest extends TestCase
     }
 
     /**
-     * 首页登录后无 slug 回退数字 id
+     * 首页登录后无 slug 回退数字 id（走 /entrepreneurs/{id}）
      */
     public function test_home_redirects_to_id_without_slug(): void
     {
@@ -265,20 +265,21 @@ class ShareSlugTest extends TestCase
         $entrepreneur = Entrepreneur::factory()->create(['user_id' => $user->id]);
 
         $this->actingAs($user)->get('/')
-            ->assertRedirect('/u/' . $entrepreneur->id);
+            ->assertRedirect('/entrepreneurs/' . $entrepreneur->id);
 
-        // /u/{id} 必须真正可访问（修复前此处 404）
-        $this->actingAs($user)->get('/u/' . $entrepreneur->id)->assertStatus(200);
+        // 无 slug 时入口指向 /entrepreneurs/{id}，可访问
+        $this->actingAs($user)->get('/entrepreneurs/' . $entrepreneur->id)->assertStatus(200);
     }
 
     /**
-     * /u/{纯数字} 按 id 回退解析，不查 slug（回归测试：修复前会 404）
+     * /u/{纯数字} 被短链正则排除（404），纯数字只走 /entrepreneurs/{id}
      */
-    public function test_numeric_slug_route_resolves_by_id(): void
+    public function test_numeric_slug_route_rejected(): void
     {
         $entrepreneur = Entrepreneur::factory()->create();
 
-        $this->get('/u/' . $entrepreneur->id)
+        $this->get('/u/' . $entrepreneur->id)->assertStatus(404);
+        $this->get('/entrepreneurs/' . $entrepreneur->id)
             ->assertStatus(200)
             ->assertSee($entrepreneur->name);
     }

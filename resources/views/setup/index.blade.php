@@ -4,8 +4,7 @@
 
 @section('content')
 <div class="max-w-2xl mx-auto px-6 py-16">
-  <p class="label-caption text-accent mb-4 text-center">SETUP</p>
-  <h1 class="font-display text-display-lg font-black text-ink mb-10 text-center">系统安装</h1>
+  <h1 class="font-display text-display-lg font-black text-ink mb-10 text-center">SETUP</h1>
 
   @if($installed)
     <div class="border border-hairline bg-surface p-10 text-center">
@@ -50,7 +49,7 @@
         return {
           form: {
             host: '127.0.0.1', port: 3306, database: '', username: 'root', password: '',
-            app_name: 'Signify', app_url: window.location.origin,
+            app_name: @json(env('APP_NAME', 'Signify')), app_url: window.location.origin,
             admin_email: '', admin_password: '', admin_password_confirmation: '',
           },
           dbOk: false, testing: false, dbMsg: '',

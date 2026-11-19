@@ -4,8 +4,7 @@
 
 @section('content')
 <div class="max-w-md mx-auto px-6 py-20">
-  <p class="label-caption text-accent mb-4 text-center">VERIFY EMAIL</p>
-  <h1 class="font-display text-display-lg font-black text-ink mb-6 text-center">验证邮箱</h1>
+  <h1 class="font-display text-display-lg font-black text-ink mb-6 text-center">VERIFY EMAIL</h1>
   <p class="text-sm text-ink-soft leading-relaxed mb-10">注册后请先验证邮箱，验证链接已发送至你的邮箱。</p>
 
   @if(session('status') === 'verification-link-sent')

@@ -1,28 +1,32 @@
-@extends('layouts.admin')
+@extends('layouts.app')
 
 @section('title', '后台首页')
 
 @section('content')
 <div class="max-w-7xl mx-auto px-6 py-12">
-  <p class="label-caption text-accent mb-4 text-center">DASHBOARD</p>
-  <h1 class="font-display text-display-lg font-black text-ink mb-10 text-center">待审核申请</h1>
+  <h1 class="font-display text-display-lg font-black text-ink mb-10 text-center">DASHBOARD</h1>
 
-  <div class="grid grid-cols-2 md:grid-cols-5 gap-6 mb-12">
-    @foreach([
-      ['label' => '全部企业家', 'value' => $stats['total'], 'color' => 'text-ink'],
-      ['label' => '待审核', 'value' => $stats['pending'], 'color' => 'text-status-warning'],
-      ['label' => '已通过', 'value' => $stats['approved'], 'color' => 'text-status-success'],
-      ['label' => '已拒绝', 'value' => $stats['rejected'], 'color' => 'text-status-danger'],
-      ['label' => '推荐申请待审核', 'value' => $stats['featuredPending'], 'color' => 'text-status-warning'],
-    ] as $card)
-      <div class="border border-hairline bg-surface p-6">
-        <div class="font-display text-4xl font-black {{ $card['color'] }} tabular-nums">{{ $card['value'] }}</div>
-        <div class="label-caption text-muted mt-2">{{ $card['label'] }}</div>
-      </div>
-    @endforeach
-  </div>
+  <div class="bento mb-12">
+    {{-- 待审核：重要信息，全宽横排大数字 --}}
+    <div class="bento-card md:col-span-2 flex items-center justify-between px-8 py-6">
+      <div class="label-caption text-muted">待审核</div>
+      <div class="font-display text-6xl font-black text-status-warning tabular-nums">{{ $stats['pending'] }}</div>
+    </div>
+    <div class="md:col-span-2 grid grid-cols-2 md:grid-cols-4 gap-5">
+      @foreach([
+        ['label' => '全部企业家', 'value' => $stats['total'], 'color' => 'text-ink'],
+        ['label' => '已通过', 'value' => $stats['approved'], 'color' => 'text-status-success'],
+        ['label' => '已拒绝', 'value' => $stats['rejected'], 'color' => 'text-status-danger'],
+        ['label' => '推荐申请待审核', 'value' => $stats['featuredPending'], 'color' => 'text-status-warning'],
+      ] as $card)
+        <div class="bento-card">
+          <div class="font-display text-4xl font-black {{ $card['color'] }} tabular-nums">{{ $card['value'] }}</div>
+          <div class="label-caption text-muted mt-2">{{ $card['label'] }}</div>
+        </div>
+      @endforeach
+    </div>
 
-  <div class="border border-hairline bg-surface"
+  <div class="bento-card md:col-span-2 p-0"
        x-data="{ tab: @js(request()->query('tab', 'cert')), switchTab(t) { this.tab = t; const url = new URL(window.location.href); url.searchParams.set('tab', t); history.replaceState(null, '', url.toString()); } }">
     <div class="px-6 py-4 border-b border-hairline flex items-center gap-8">
       <button type="button" @click="switchTab('cert')"
@@ -68,7 +72,7 @@
                   @csrf
                   <button class="btn-outline !py-2 !px-5">拒绝</button>
                 </form>
-                <a href="{{ route('entrepreneurs.show', $entrepreneur->id) }}" target="_blank" rel="noopener"
+                <a href="{{ $entrepreneur->url }}" target="_blank" rel="noopener"
                    class="label-caption text-muted hover:text-ink px-2 transition-colors">查看</a>
               </div>
             </div>
@@ -118,7 +122,7 @@
                   @csrf
                   <button class="btn-outline !py-2 !px-5">拒绝</button>
                 </form>
-                <a href="{{ route('entrepreneurs.show', $entrepreneur->id) }}" target="_blank" rel="noopener"
+                <a href="{{ $entrepreneur->url }}" target="_blank" rel="noopener"
                    class="label-caption text-muted hover:text-ink px-2 transition-colors">查看</a>
               </div>
             </div>
@@ -129,6 +133,7 @@
         </div>
       @endif
     </div>
+  </div>
   </div>
 </div>
 @endsection

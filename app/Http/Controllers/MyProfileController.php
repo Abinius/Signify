@@ -5,9 +5,12 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ProfileCreateRequest;
 use App\Http\Requests\ProfileUpdateRequest;
 use App\Models\Entrepreneur;
+use App\Models\User;
+use App\Notifications\EntrepreneurNotification;
 use App\Services\AvatarService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Validation\ValidationException;
 
 class MyProfileController extends Controller
@@ -23,6 +26,68 @@ class MyProfileController extends Controller
             'entrepreneur' => $entrepreneur,
             'cities' => config('cities', []),
         ]);
+    }
+
+    /**
+     * 设置 - 独立页面（账户资料 / 认证 / 推荐 / 专属链接 / 修改密码）
+     */
+    public function settings()
+    {
+        return view('settings.index');
+    }
+
+    /**
+     * 设置抽屉用的档案概览（JSON）
+     */
+    public function summary(Request $request): array
+    {
+        $e = $request->user()->entrepreneur;
+
+        if (!$e) {
+            return [
+                'has_entrepreneur' => false,
+                'profile_url' => route('profile.show'),
+            ];
+        }
+
+        $cooldownUntil = $e->featured_rejected_at?->addDays(Entrepreneur::FEATURED_COOLDOWN_DAYS);
+        $cooldownDays = $cooldownUntil && $cooldownUntil->isFuture()
+            ? (int) ceil(abs($cooldownUntil->diffInSeconds(now())) / 86400)
+            : 0;
+        $canApplyFeatured = !$e->is_featured
+            && $e->status === Entrepreneur::STATUS_APPROVED
+            && $e->featured_request_status !== Entrepreneur::FEATURED_STATUS_PENDING
+            && (!$cooldownUntil || $cooldownUntil->isPast());
+
+        $featuredLabel = match (true) {
+            $e->is_featured => '已推荐',
+            $e->featured_request_status === Entrepreneur::FEATURED_STATUS_PENDING => '推荐待审核',
+            $e->featured_request_status === Entrepreneur::FEATURED_STATUS_REJECTED && !$canApplyFeatured => "未通过 · {$cooldownDays}天后可申请",
+            $e->status !== Entrepreneur::STATUS_APPROVED => '需先通过认证',
+            default => null,
+        };
+
+        $statusLabel = match ($e->status) {
+            Entrepreneur::STATUS_PENDING => '待审核',
+            Entrepreneur::STATUS_APPROVED => '已收录',
+            Entrepreneur::STATUS_REJECTED => '已拒绝',
+            default => null,
+        };
+
+        return [
+            'has_entrepreneur' => true,
+            'status' => $e->status,
+            'status_label' => $statusLabel,
+            'is_featured' => $e->is_featured,
+            'featured_request_status' => $e->featured_request_status,
+            'featured_label' => $featuredLabel,
+            'can_apply_featured' => $canApplyFeatured,
+            'slug' => $e->share_slug,
+            'card_url' => $e->url,
+            'check_slug_url' => route('profile.check-slug'),
+            'update_url' => route('profile.update'),
+            'featured_url' => route('profile.featured-request'),
+        ];
     }
 
     /**
@@ -46,7 +111,7 @@ class MyProfileController extends Controller
         if (!empty($data['share_slug'])) {
             // 拒绝纯数字 slug
             if (ctype_digit($data['share_slug'])) {
-                return redirect()->back()->withInput()->withErrors([
+                throw ValidationException::withMessages([
                     'share_slug' => '专属链接不能为纯数字',
                 ]);
             }
@@ -54,7 +119,7 @@ class MyProfileController extends Controller
                 ->where('user_id', '!=', $entrepreneur->user_id)
                 ->exists();
             if ($taken) {
-                return redirect()->back()->withInput()->withErrors([
+                throw ValidationException::withMessages([
                     'share_slug' => '该专属链接已被使用，请换一个',
                 ]);
             }
@@ -98,6 +163,10 @@ class MyProfileController extends Controller
             if (!empty($oldFiles[$field])) {
                 $avatarService->delete($oldFiles[$field]);
             }
+        }
+
+        if ($request->wantsJson()) {
+            return response()->json(['ok' => true, 'slug' => $entrepreneur->fresh()->share_slug]);
         }
 
         return redirect()->back()->with('success', '信息更新成功！');
@@ -155,30 +224,27 @@ class MyProfileController extends Controller
         $entrepreneur = Auth::user()->entrepreneur;
 
         if (!$entrepreneur) {
-            return redirect()->back()->with('error', '您尚未创建企业家档案');
+            return $this->featuredFail($request, '您尚未创建企业家档案');
         }
 
         $this->authorize('requestFeatured', $entrepreneur);
 
-        // 认证门槛：仅已通过认证的档案可申请推荐
         if ($entrepreneur->status !== Entrepreneur::STATUS_APPROVED) {
-            return redirect()->back()->with('error', '档案通过认证后方可申请推荐');
+            return $this->featuredFail($request, '档案通过认证后方可申请推荐');
         }
         if ($entrepreneur->is_featured) {
-            return redirect()->back()->with('error', '您已是推荐企业家');
+            return $this->featuredFail($request, '您已是推荐企业家');
         }
         if ($entrepreneur->featured_request_status === Entrepreneur::FEATURED_STATUS_PENDING) {
-            return redirect()->back()->with('error', '您的推荐申请正在审核中');
+            return $this->featuredFail($request, '您的推荐申请正在审核中');
         }
 
-        // 冷却期：被拒后 15 天内不可再申请
         $cooldownUntil = $entrepreneur->featured_rejected_at?->addDays(Entrepreneur::FEATURED_COOLDOWN_DAYS);
         if ($cooldownUntil && $cooldownUntil->isFuture()) {
-            $days = $cooldownUntil->diffInDays(now()) + 1;
-            return redirect()->back()->with('error', "推荐申请被拒后需等待 {$days} 天后再次申请");
+            $days = (int) ceil(abs($cooldownUntil->diffInSeconds(now())) / 86400);
+            return $this->featuredFail($request, "推荐申请被拒后需等待 {$days} 天后再次申请");
         }
 
-        // 申请理由必填
         $data = $request->validate([
             'reason' => 'required|string|max:500',
         ]);
@@ -190,6 +256,20 @@ class MyProfileController extends Controller
             'featured_rejected_at'    => null,
         ]);
 
+        Notification::send(User::where('is_admin', true)->get(), new EntrepreneurNotification(EntrepreneurNotification::FEATURED_SUBMITTED, $entrepreneur));
+
+        if ($request->wantsJson()) {
+            return response()->json(['ok' => true]);
+        }
+
         return redirect()->back()->with('success', '推荐申请已提交，请等待管理员审核');
+    }
+
+    private function featuredFail(Request $request, string $message)
+    {
+        if ($request->wantsJson()) {
+            throw ValidationException::withMessages(['featured' => $message]);
+        }
+        return redirect()->back()->with('error', $message);
     }
 }

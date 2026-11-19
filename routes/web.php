@@ -1,8 +1,10 @@
 <?php
 
 use App\Http\Controllers\EntrepreneurController;
+use App\Http\Controllers\SeoController;
 use App\Http\Controllers\MyProfileController;
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\NotificationController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -10,20 +12,30 @@ use Illuminate\Support\Facades\Route;
 | 公开路由
 |--------------------------------------------------------------------------
 */
-Route::get('/', [EntrepreneurController::class, 'home'])->middleware('auth')->name('home');
-Route::get('/entrepreneurs', [EntrepreneurController::class, 'index'])->name('entrepreneurs.index');
+Route::get('/', [EntrepreneurController::class, 'home'])->name('home');
+Route::get('/entrepreneurs', [EntrepreneurController::class, 'index'])
+    ->name('entrepreneurs.index')
+    ->middleware('throttle:60,1');
 
 /*
-| 短链路由 /u/{slug}：复用 entrepreneurs.show。
-| 放在 /entrepreneurs/{id} 前面，避免 {id} 先吃掉纯数字 slug。
-| named route 指向 /u，route('entrepreneurs.show', $slug) 自动输出短链 URL。
+| SEO / GEO 公开端点（robots、sitemap、llms；爬虫无需登录）
 */
-Route::get('/u/{slug}', [EntrepreneurController::class, 'show'])
+Route::get('/robots.txt', [SeoController::class, 'robots'])->name('seo.robots');
+Route::get('/sitemap.xml', [SeoController::class, 'sitemap'])->name('seo.sitemap');
+Route::get('/llms.txt', [SeoController::class, 'llms'])->name('seo.llms');
+
+/*
+| 短链路由 /u/{slug}：named route 指向 /u，route('entrepreneurs.show', $slug) 输出短链 URL。
+| 正则排除纯数字（纯数字只走 /entrepreneurs/{id}），消除 /u/9 与 /entrepreneurs/9 双 URL 重复。
+| 调用点统一用 $entrepreneur->url accessor，share_slug 为空时自动 fallback 到 id 路由。
+*/
+Route::get('/u/{slug}', [EntrepreneurController::class, 'showBySlug'])
     ->name('entrepreneurs.show')
-    ->where('slug', '[a-z0-9]+(?:-[a-z0-9]+)*');
+    ->where('slug', '(?![0-9]+$)[a-z0-9]+(?:-[a-z0-9]+)*')
+    ->middleware('throttle:120,1');
 
 // 旧数字链接保留，不 301（避免微信预览读到目标 URL）
-Route::get('/entrepreneurs/{id}', [EntrepreneurController::class, 'show'])
+Route::get('/entrepreneurs/{id}', [EntrepreneurController::class, 'showById'])
     ->whereNumber('id');
 
 /*
@@ -40,8 +52,21 @@ Route::middleware(['auth'])->group(function () {
     // 短链可用性实时校验（AJAX 端点）
     Route::get('/my/profile/check-slug', [MyProfileController::class, 'checkSlug'])->name('profile.check-slug');
 
+    // 设置（独立页）
+    Route::get('/my/settings', [MyProfileController::class, 'settings'])->name('my.settings');
+
+    // 设置抽屉用的档案概览（AJAX）
+    Route::get('/my/summary', [MyProfileController::class, 'summary'])->name('profile.summary');
+
     // 推荐申请
     Route::post('/my/profile/featured-request', [MyProfileController::class, 'requestFeatured'])->name('profile.featured-request');
+
+    // 站内通知
+    Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
+    Route::get('/notifications/unread', [NotificationController::class, 'unread'])->name('notifications.unread');
+    Route::get('/notifications/recent', [NotificationController::class, 'recent'])->name('notifications.recent');
+    Route::post('/notifications/{id}/read', [NotificationController::class, 'markRead'])->name('notifications.read');
+    Route::post('/notifications/read-all', [NotificationController::class, 'markAllRead'])->name('notifications.read-all');
 });
 
 /*
