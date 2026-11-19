@@ -71,7 +71,7 @@
             </div>
             <div>
               <label class="label-caption text-muted">职务</label>
-              <input type="text" name="title" value="{{ old('title', $entrepreneur->title) }}" placeholder="如：创始人 / CEO" class="input-line">
+              <input type="text" name="title" value="{{ old('title', $entrepreneur->title) }}" class="input-line">
               @error('title') <p class="field-error">{{ $message }}</p> @enderror
             </div>
           </div>
@@ -92,7 +92,7 @@
                  @keydown.escape.window="open = false" @click.outside="open = false">
               <div class="flex items-end gap-2">
                 <input type="text" name="city" id="city-input" x-model="query"
-                       autocomplete="off" placeholder="选择或输入城市" @focus="openPicker()" class="input-line">
+                       autocomplete="off" @focus="openPicker()" class="input-line">
               </div>
 
               {{-- 桌面端：输入框下方下拉面板 --}}
@@ -164,7 +164,6 @@
                      x-show="(link || '').trim() !== ''"
                      class="w-5 h-5 flex-shrink-0 object-contain" alt="社交平台图标">
                 <input type="url" name="social_links[]" x-model="socialLinks[i]"
-                       :placeholder="'https://… 社交主页链接 ' + (i + 1)"
                        class="input-line flex-1">
                 <button type="button" @click="removeSocial(i)"
                         class="label-caption text-muted hover:text-status-danger transition-colors flex-shrink-0"
@@ -173,13 +172,13 @@
             </template>
           </div>
           <div class="mt-3">
-            <button type="button" @click="addSocial()" x-show="socialLinks.length < 5"
-                    class="inline-flex items-center gap-2 label-caption text-accent hover:opacity-70 transition-opacity">
+            <button type="button" @click="addSocial()" :disabled="socialLinks.length >= 5"
+                    :class="socialLinks.length >= 5 ? 'opacity-40 cursor-not-allowed' : 'hover:opacity-70'"
+                    class="inline-flex items-center gap-2 label-caption text-accent transition-opacity">
               <span class="w-4 h-4 border border-current grid place-items-center leading-none">＋</span>
               添加社交主页
             </button>
           </div>
-          <p class="mt-1.5 text-xs text-muted" x-show="socialLinks.length >= 5">最多添加 5 个社交主页</p>
           @error('social_links') <p class="field-error">{{ $message }}</p> @enderror
           @error('social_links.*') <p class="field-error">{{ $message }}</p> @enderror
         </div>

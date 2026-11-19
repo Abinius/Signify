@@ -9,7 +9,6 @@
   @if($installed)
     <div class="border border-hairline bg-surface p-10 text-center">
       <p class="font-display text-display-md font-bold text-ink">系统已安装</p>
-      <p class="text-sm text-muted mt-3">如需重新安装，请先清除数据库数据。</p>
       <a href="{{ route('home') }}" class="btn-ink mt-8">返回首页</a>
     </div>
   @else

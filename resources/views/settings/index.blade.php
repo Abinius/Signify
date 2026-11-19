@@ -72,7 +72,7 @@
           <div class="flex items-stretch border border-hairline">
             <span class="px-2 flex items-center text-xs text-muted bg-surface border-r border-hairline">/u/</span>
             <input type="text" x-model="draft" @input.debounce.400ms="checkSlug()" @blur="onSlugBlur()"
-                   placeholder="your-slug" :disabled="saving"
+                   :disabled="saving"
                    pattern="[a-z0-9]+(?:-[a-z0-9]+)*"
                    class="flex-1 px-2 py-2 text-sm bg-paper text-ink outline-none min-w-0 disabled:opacity-60">
           </div>
@@ -110,11 +110,14 @@
         <span class="label-caption text-muted transition-transform" :class="pwOpen ? 'rotate-180' : ''">▾</span>
       </button>
       <div x-show="pwOpen" x-cloak id="pw-panel" class="mt-3 space-y-2">
-        <input type="password" x-model="pwCurrent" placeholder="当前密码"
+        <label class="block label-caption text-muted">当前密码</label>
+        <input type="password" x-model="pwCurrent"
                autocomplete="current-password" class="input-line text-sm w-full">
-        <input type="password" x-model="pwNew" placeholder="新密码（至少 6 位）"
-               autocomplete="new-password" class="input-line text-sm w-full">
-        <input type="password" x-model="pwConfirm" placeholder="确认新密码"
+        <label class="block label-caption text-muted">新密码</label>
+        <input type="password" x-model="pwNew"
+               autocomplete="new-password" minlength="6" class="input-line text-sm w-full">
+        <label class="block label-caption text-muted">确认新密码</label>
+        <input type="password" x-model="pwConfirm"
                autocomplete="new-password" class="input-line text-sm w-full">
         <p x-show="pwError" x-cloak class="field-error" x-text="pwError"></p>
         <p x-show="pwOk" x-cloak class="text-[11px] text-status-success">密码已更新 ✓</p>

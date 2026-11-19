@@ -11,19 +11,19 @@
 
     <div>
       <label class="label-caption text-muted">邮箱</label>
-      <input type="email" name="email" value="{{ old('email') }}" required autofocus autocomplete="username" class="input-line placeholder:text-muted/60">
+      <input type="email" name="email" value="{{ old('email') }}" required autofocus autocomplete="username" class="input-line">
       @error('email') <p class="field-error">{{ $message }}</p> @enderror
     </div>
 
     <div>
       <label class="label-caption text-muted">密码</label>
-      <input type="password" name="password" required autocomplete="new-password" placeholder="至少 6 个字符" class="input-line placeholder:text-muted/60">
+      <input type="password" name="password" required autocomplete="new-password" minlength="6" class="input-line">
       @error('password') <p class="field-error">{{ $message }}</p> @enderror
     </div>
 
     <div>
       <label class="label-caption text-muted">确认密码</label>
-      <input type="password" name="password_confirmation" required autocomplete="new-password" placeholder="再次输入密码" class="input-line placeholder:text-muted/60">
+      <input type="password" name="password_confirmation" required autocomplete="new-password" class="input-line">
     </div>
 
     <button type="submit" class="btn-ink w-full">SIGN UP</button>

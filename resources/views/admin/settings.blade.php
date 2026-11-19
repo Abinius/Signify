@@ -32,10 +32,8 @@
         @error('site_description') <p class="field-error">{{ $message }}</p> @enderror
       </div>
       <div>
-        <label class="label-caption text-muted">首页 Banner 图片路径</label>
-        <input type="text" name="banner_image" value="{{ old('banner_image', $values['banner_image']) }}"
-               placeholder="如：/landingbanner.webp 或 https://…" class="input-line">
-        <p class="text-xs text-muted mt-2">落地页 Hero 背景图路径或完整 URL；留空回退默认 banner。</p>
+        <label class="label-caption text-muted">首页 Banner 图片路径（留空回退默认）</label>
+        <input type="text" name="banner_image" value="{{ old('banner_image', $values['banner_image']) }}" class="input-line">
         @error('banner_image') <p class="field-error">{{ $message }}</p> @enderror
       </div>
     </div>
@@ -44,7 +42,6 @@
     <div class="bento-card md:col-span-2 space-y-6">
       <div>
         <p class="label-caption text-muted">微信 / 社交媒体分享卡片</p>
-        <p class="text-xs text-muted mt-2">用于微信等平台分享时的默认标题、描述与图片（企业家名片页优先使用其自身头像与简介）。</p>
       </div>
       <div>
         <label class="label-caption text-muted">分享卡片标题</label>
@@ -100,14 +97,12 @@
       <p class="label-caption text-muted">Footer</p>
       <div>
         <label class="label-caption text-muted">版权信息</label>
-        <input type="text" name="footer_copyright" value="{{ old('footer_copyright', $values['footer_copyright']) }}"
-               placeholder="如：© 2026 SIGNIFY" class="input-line">
+        <input type="text" name="footer_copyright" value="{{ old('footer_copyright', $values['footer_copyright']) }}" class="input-line">
         @error('footer_copyright') <p class="field-error">{{ $message }}</p> @enderror
       </div>
       <div>
-        <label class="label-caption text-muted">ICP 备案号</label>
-        <input type="text" name="icp_number" value="{{ old('icp_number', $values['icp_number']) }}"
-               placeholder="如：京ICP备12345678号（留空则不展示）" class="input-line">
+        <label class="label-caption text-muted">ICP 备案号（留空则不展示）</label>
+        <input type="text" name="icp_number" value="{{ old('icp_number', $values['icp_number']) }}" class="input-line">
         @error('icp_number') <p class="field-error">{{ $message }}</p> @enderror
       </div>
     </div>
